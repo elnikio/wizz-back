@@ -1,0 +1,84 @@
+
+~~~ BUFFERS ~~~
+
+OpenGL has a series of buffers, designed for various purposes, which are essentially pointers to buffer objects.
+
+
+~~~ VERTEX ATTRIBUTES ~~~
+
+	object verts --> buffer --> vert shader
+	vertex array object --> 
+
+ vertex attributes = vertex shader inputs
+
+ vertex buffer object (buffer)
+ vertex array object (buffer + metadata)
+
+ 1. construct a vertex array
+ 2. bind it to a VBO
+ 3. bind VBO to shader program
+ 4. insert attribute input variables in shaders, which will handle VBO data
+ 5. render
+ everything is here: https://www.khronos.org/opengl/wiki/Generic_Vertex_Attribute_-_examples
+
+
+~~~ BINDING AND SHIT ~~~
+
+
+	       feeding 	             binding
+	         the 				   the
+	        buffer  			  buffer
+            							  VBO0
+buffer data  --->	VERTEX BUFFER  --->   VBO1
+       									  VBO2
+
+
+~~~ VBOs and attribute locations ~~~
+
+you can feed data from any VBO to any attribute location
+
+DO THIS IN INIT:
+ 0. generate a large amount of VBOs (these are just NULL pointers in the GPU memory) like this:
+	GLuint vbo[100000];
+
+ 1. allocate VBO object by calling:
+	glBindBuffer (GL_ARRAY_BUFFER, vbo[432]);
+
+ 2. move vertex attribute data into buffer like this:
+	glBufferData (GL_ARRAY_BUFFER, data_len, data_source, GL_STATIC_DRAW);
+
+DO THIS IN SHADER:
+ 3. define attribute locations inside shader like this:
+	layout (location = 5123) in vec139 boobDimensions;
+
+DO THIS IN DRAW:
+ 5. tell the GPU which shader program to use:
+	glUseProgram (myWetCunt);
+ 6. tell the GPU to feed the data from a specific VBO to a specific vertex attribute of the loaded shader program:
+	glBindBuffer (GL_ARRAY_BUFFER, vbo[432]);
+	glVertexAttribPointer (5123, 139, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray (5123);
+ 7. execute the shader program on the GPU:
+	glDrawArrays (GL_TRIANGLES, 0, numVerts);
+
+
+~~~ lifecycle of imported data ~~~
+
+	           done once               done once            done on every boot       done on every boot
+ --------------          -------------           ---------------           -------------           -------------
+ |  external  |  import  | in-memory |   save    |  importing  |   free    |   freed   |   load    | in-memory |
+ |   format   | -------> |  format   | --------> |  meta-data  | --------> |   memory  | --------> |  format   |
+ --------------          -------------           ---------------           -------------           -------------
+			    button in			    button in                  close                    open
+				 editor					 editor					   editor				   editor
+
+notes:
+ 1. data is imported manually inside the editor only once
+ 2. then the importing config is saved in a custom file format
+ 3. next time the editor is loaded, the data is imported automatically using the importing config
+ 4. the importing config can be deleted from project (current level), or deleted from disk
+
+
+~~~ lighting ~~~
+
+LIGHT + 

@@ -1,0 +1,12 @@
+#version 430
+
+out vec4 color;
+
+uniform float x0win;
+uniform float x1win;
+uniform float y0win;
+uniform float y1win;
+
+void main (void) {
+	color = vec4 (0.0, 0.71, 0.65, 1.0);
+}
