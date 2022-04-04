@@ -1,4 +1,4 @@
-#include "serpent.h"
+#include "header.h"
 
 char windowResized = FALSE;
 
@@ -80,7 +80,7 @@ void display (Program* program, double currentTime) {
 	//bgDraw (program);
 
 	vec3 textColor = {1.0, 1.0, 1.0};
-	drawText (program, "Serpent is the most badass neural engine.", 840, 100.0, 0.6, textColor, 1.0);
+	drawText (program, "Do again.", 840, 100.0, 0.6, textColor, 1.0);
 	windowResized = FALSE;
 }
 

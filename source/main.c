@@ -1,4 +1,4 @@
-#include "serpent.h"
+#include "header.h"
 
 void init (Program* program) {
 	srand(time(NULL));

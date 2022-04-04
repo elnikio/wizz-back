@@ -1,4 +1,4 @@
-#include "serpent.h"
+#include "header.h"
 
 
 void guiInit (Program* program, char *font) {

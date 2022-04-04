@@ -1,4 +1,4 @@
-#include "serpent.h"
+#include "header.h"
 
 extern char windowResized;
 
