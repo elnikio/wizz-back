@@ -23,21 +23,27 @@ void player_add_step (Program* program, char direction) {
 }
 
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
-	switch (key) {
-		case KEY_RIGHT:
-			player_add_step (program, RIGHT);
-			break;
-		case KEY_LEFT:
-			player_add_step (program, LEFT);
-			break;
-		case KEY_UP:
-			player_add_step (program, UP);
-			break;
-		case KEY_DOWN:
-			player_add_step (program, DOWN);
-			break;
-		default:
-			return;
+	if (action > 0) {
+		switch (key) {
+			case KEY_RIGHT:
+				player_add_step (program, RIGHT);
+				step_level (program);
+				break;
+			case KEY_LEFT:
+				player_add_step (program, LEFT);
+				step_level (program);
+				break;
+			case KEY_UP:
+				player_add_step (program, UP);
+				step_level (program);
+				break;
+			case KEY_DOWN:
+				player_add_step (program, DOWN);
+				step_level (program);
+				break;
+			default:
+				return;
+		}
 	}
 	/*
 	if (key that moves player) {
@@ -61,8 +67,61 @@ Entity* entityNew (char type) {
 	return entity;
 }
 
-void step_level (Program* program, int level) {
-	
+// This is used to delete the first move in the queue after it's been processed.
+void entity_pop_move (Entity* entity) {
+	Move* second = entity -> moves -> next;
+	free (entity -> moves);
+	entity -> moves = second;
+}
+
+void step_level (Program* program) {
+	Entity* entity;
+	for (int i = 0; i < 15; i ++) {
+		for (int j = 0; j < 15; j ++) {
+			entity = program -> level -> cell [i][j].entity;
+			if (entity != NULL) {
+				if (entity -> moves != NULL) {
+					Move* move = entity -> moves;
+					switch (move -> type) {
+						case STEP:
+							switch (move -> dir) {
+								case LEFT:
+									if (i > 0) {
+										program -> level -> cell [i - 1][j].entity = entity;
+										program -> level -> cell [i][j].entity = NULL;
+									}
+									program -> playerDir = LEFT;
+									break;
+								case RIGHT:
+									if (i < 14) {
+										program -> level -> cell [i + 1][j].entity = entity;
+										program -> level -> cell [i][j].entity = NULL;
+									}
+									program -> playerDir = RIGHT;
+									break;
+								case UP:
+									if (j < 14) {
+										program -> level -> cell [i][j + 1].entity = entity;
+										program -> level -> cell [i][j].entity = NULL;
+									}
+									program -> playerDir = UP;
+									break;
+								case DOWN:
+									if (j > 0) {
+										program -> level -> cell [i][j - 1].entity = entity;
+										program -> level -> cell [i][j].entity = NULL;
+									}
+									program -> playerDir = DOWN;
+									break;
+							}
+							break;
+					}
+					entity_pop_move (entity);
+				}
+			}
+		}
+	}
+
 }
 
 void load_level (Program* program, int level) {
@@ -91,7 +150,7 @@ void load_level (Program* program, int level) {
 				this -> cell [i][10].occupant_type = BLOCK;
 			}
 
-			program -> levels -> forest_1 = this;
+			program -> level = this;
 			
 			break;
 	}
@@ -110,7 +169,20 @@ void tileDraw (Program* program, int x, int y, int tile_type, char background) {
 			tex = program -> grassTex;
 			break;
 		case PLAYER:
-			tex = program -> doieTex;
+			switch (program -> playerDir) {
+				case UP:
+					tex = program -> playerUpTex;
+					break;
+				case DOWN:
+					tex = program -> playerDownTex;
+					break;
+				case LEFT:
+					tex = program -> playerLeftTex;
+					break;
+				case RIGHT:
+					tex = program -> playerRightTex;
+					break;
+			}
 			break;
 		case TREE:
 			tex = program -> treeTex;
@@ -150,7 +222,7 @@ void draw_level (Program* program, int level) {
 	Level* this = NULL;
 	switch (level) {
 		case FOREST_1:
-			this = program -> levels -> forest_1;
+			this = program -> level;
 	}
 	for (int i = -7; i <= 7; i ++) {
 		for (int j = -7; j <= 7; j ++) {

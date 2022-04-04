@@ -39,9 +39,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> framesI = 0;
 	program -> time = 0.0;
 	program -> chapter = FOREST;
-	program -> level = 1;
-	program -> levels = malloc(sizeof(Levels));
-	program -> levels -> forest_1 = NULL;
+	program -> level = NULL;
 
 	load_level (program, FOREST_1);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
@@ -57,13 +55,13 @@ Program* renderInit (GLFWwindow* window) {
 	// Import textures:
 	program -> grassTex = importTexture ("../sprites/grass.png");
 	program -> treeTex = importTexture ("../sprites/trunk.png");
-	program -> doieTex = importTexture ("../sprites/doie4.png");
+	program -> playerUpTex = importTexture ("../sprites/player_up.png");
+	program -> playerDownTex = importTexture ("../sprites/player_down.png");
+	program -> playerLeftTex = importTexture ("../sprites/player_left.png");
+	program -> playerRightTex = importTexture ("../sprites/player_right.png");
 	program -> blockTex = importTexture ("../sprites/block.png");
 	program -> crateTex = importTexture ("../sprites/crate.png");
-	glActiveTexture (GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, program -> doieTex);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	program -> playerDir = UP;
 
 	glEnable (GL_DEPTH_TEST);
 	glDepthFunc (GL_LEQUAL);

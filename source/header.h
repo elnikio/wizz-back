@@ -25,7 +25,6 @@
 
 typedef struct _Frame Frame;
 typedef struct _Program Program;
-typedef struct _Levels Levels;
 typedef struct _Level Level;
 typedef struct _Cell Cell;
 typedef struct _Entity Entity;
@@ -53,10 +52,6 @@ enum _chapters {
 enum _levels {
 	FOREST_1,
 	FOREST_2
-};
-
-struct _Levels {
-	Level* forest_1;
 };
 
 enum _entities {
@@ -267,12 +262,15 @@ struct _Program {
 
 	// Game data:
 	char chapter;
-	char level;
-	Levels* levels;
+	Level* level;
 	Entity* player;
 	
 	// Generic textures:
-	GLuint doieTex;
+	char playerDir;
+	GLuint playerUpTex;
+	GLuint playerDownTex;
+	GLuint playerLeftTex;
+	GLuint playerRightTex;
 	GLuint blockTex;
 	GLuint crateTex;
 
@@ -321,3 +319,4 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 void load_level (Program* program, int level);
 void draw_level (Program* program, int level);
 Entity* entityNew (char type);
+void step_level (Program* program);
