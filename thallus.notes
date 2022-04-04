@@ -1,7 +1,0 @@
-
-main features:
-1. 3D navigation - you can drag left, right and zoom in and out. cells fade out as they move away from the Z focus range.
-2. literate programming - you can intertwine code with text. you can create hyperlinks that send you to other cells.
-3. meta-programs / customizable cells - cells can be programmed. this way you can configure the compiler for the language you want to use. you create classes of cells, which can be inherited to add domain-specific features.
-4. beautiful and minimalistic
-5. gallaxies and black holes - you can create a black hole to a new galaxy.
