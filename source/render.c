@@ -32,14 +32,21 @@ Program* renderInit (GLFWwindow* window) {
 	program -> frameShader = createShaderProgram ("../shaders/vframe.glsl", "../shaders/fframe.glsl");
 	program -> bgShader = createShaderProgram ("../shaders/vbg.glsl", "../shaders/fbg.glsl");
 	program -> arrowShader = createShaderProgram ("../shaders/varrow.glsl", "../shaders/farrow.glsl");
+	program -> spriteShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fsprite.glsl");
 	program -> vao = vao;
 	program -> vbo = vbo;
 	program -> frames = malloc(sizeof(Frame*) * 100);
 	program -> framesI = 0;
 	program -> time = 0.0;
+	program -> chapter = FOREST;
+	program -> level = 1;
+	program -> levels = malloc(sizeof(Levels));
+	program -> levels -> forest_1 = NULL;
+
+	load_level (program, FOREST_1);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
 
-	glfwSetKeyCallback(program -> window, NULL);
+	glfwSetKeyCallback(program -> window, keyboard_callback);
 	guiInit (program, "../fonts/dongle.ttf");
 
 	// Pass data to shader programs:
@@ -47,9 +54,14 @@ Program* renderInit (GLFWwindow* window) {
 	vec4 sunDir = {0.6, -0.4, 0.4};
 	uniform4FV (program -> frameShader, "sunDir", sunDir);
 
-	program -> envTex = importTexture ("./bg8.jpg");
+	// Import textures:
+	program -> grassTex = importTexture ("../sprites/grass.png");
+	program -> treeTex = importTexture ("../sprites/trunk.png");
+	program -> doieTex = importTexture ("../sprites/doie4.png");
+	program -> blockTex = importTexture ("../sprites/block.png");
+	program -> crateTex = importTexture ("../sprites/crate.png");
 	glActiveTexture (GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, program -> envTex);
+	glBindTexture (GL_TEXTURE_2D, program -> doieTex);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
@@ -64,9 +76,25 @@ Program* renderInit (GLFWwindow* window) {
 }
 
 void display (Program* program, double currentTime) {
-	glClearColor (8.0 / 250.0, 4.0 / 250.0, 17.0 / 250.0, 1.0);
+
+	program -> canvasY0 = 0;
+	program -> canvasY1 = program -> scrHeight;
+	program -> canvasX0 = program -> scrWidth / 2 - program -> scrHeight / 2;
+	program -> canvasX1 = program -> scrWidth / 2 + program -> scrHeight / 2;
+	
+	vec3 textColor = {1.0, 0.0, 0.0};
+	switch (program -> chapter) {
+		case FOREST:
+			glClearColor ((float)FOREST_BG_R / 255, (float)FOREST_BG_G / 255, (float)FOREST_BG_B / 255, 1.0);
+			textColor[X] = (float)FOREST_R / 255;
+			textColor[Y] = (float)FOREST_G / 255;
+			textColor[Z] = (float)FOREST_B / 255;
+			break;
+	}
 	glClear (GL_DEPTH_BUFFER_BIT);
 	glClear (GL_COLOR_BUFFER_BIT);
+
+	draw_level (program, FOREST_1);
 	
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
 
@@ -74,13 +102,7 @@ void display (Program* program, double currentTime) {
 	glDrawBuffer (GL_FRONT);
 	glEnable(GL_MULTISAMPLE);
 
-	glActiveTexture (GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, program -> envTex);
-
-	//bgDraw (program);
-
-	vec3 textColor = {1.0, 1.0, 1.0};
-	drawText (program, "Do again.", 840, 100.0, 0.6, textColor, 1.0);
+	drawText (program, "Chapter 1 - The Hut.", program -> scrWidth / 50, program -> scrHeight / 50, 1.6, textColor, 1.0);
 	windowResized = FALSE;
 }
 

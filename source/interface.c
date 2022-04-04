@@ -139,12 +139,56 @@ void frameDraw (Program* program, Frame* frame) {
 	
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 	glActiveTexture (GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, program -> envTex);
 
 	// do the actual drawing if button is set to visible:
 	if (frame -> visible) {
 		glDrawArrays (GL_TRIANGLES, 0, 6);
 	}
+}
+
+void imageDraw (Program* program, GLuint texture, int x, int y, int width, int height, char background) {
+	// draw button
+	glUseProgram (program -> spriteShader);
+
+	float x0 = x - width / 2;
+	float x1 = x + width / 2;
+	float y0 = y - height / 2;
+	float y1 = y + height / 2;
+	
+	float UIx0 = (x0 / program -> scrWidth);
+	float UIx1 = (x1 / program -> scrWidth);
+	float UIy0 = (y0 / program -> scrHeight);
+	float UIy1 = (y1 / program -> scrHeight);
+
+	/*
+	float UIx0 = -1 + 2 * (x0 / program -> scrHeight);
+	float UIx1 = -1 + 2 * (x1 / program -> scrHeight);
+	float UIy0 = -1 + 2 * (y0 / program -> scrHeight);
+	float UIy1 = -1 + 2 * (y1 / program -> scrHeight);
+	*/
+
+	uniformF (program -> spriteShader, "x0", UIx0);
+	uniformF (program -> spriteShader, "x1", UIx1);
+	uniformF (program -> spriteShader, "y0", UIy0);
+	uniformF (program -> spriteShader, "y1", UIy1);
+
+	uniformI (program -> spriteShader, "chapter", FOREST);
+	uniformI (program -> spriteShader, "background", background);
+	uniformF (program -> spriteShader, "time", (const GLfloat) glfwGetTime ());
+
+	glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);
+	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray (0);
+
+	glEnable (GL_DEPTH_TEST);
+	glDepthFunc (GL_LEQUAL);
+	glDisable (GL_CULL_FACE);
+	
+	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+	glActiveTexture (GL_TEXTURE0);
+	glBindTexture (GL_TEXTURE_2D, texture);
+
+	glDrawArrays (GL_TRIANGLES, 0, 6);
 }
 
 void bgDraw (Program* program) {

@@ -20,9 +20,113 @@
 #define uniform3FV(x,y,z)	glProgramUniform3fv(x,glGetUniformLocation(x,y),1,z)
 #define uniform4FM(x,y,z)	glProgramUniformMatrix4fv(x,glGetUniformLocation(x,y),1,GL_FALSE,z)
 #define uniform3F(x,y,z,w,a)	glProgramUniform3f(x,glGetUniformLocation(x,y),z,w,a);
+#define	SCR_WIDTH_DEFAULT	1920
+#define SCR_HEIGHT_DEFAULT	1080
 
 typedef struct _Frame Frame;
 typedef struct _Program Program;
+typedef struct _Levels Levels;
+typedef struct _Level Level;
+typedef struct _Cell Cell;
+typedef struct _Entity Entity;
+typedef struct _Move Move;
+
+enum _keys {
+	KEY_RIGHT = 262,
+	KEY_LEFT = 263,
+	KEY_UP = 265,
+	KEY_DOWN = 264
+};
+
+enum _directions {
+	LEFT,
+	RIGHT,
+	UP,
+	DOWN
+};
+
+enum _chapters {
+	FOREST,
+	OCEAN
+};
+
+enum _levels {
+	FOREST_1,
+	FOREST_2
+};
+
+struct _Levels {
+	Level* forest_1;
+};
+
+enum _entities {
+	// Generic:
+	EMPTY,
+	PLAYER	= 0000000000000001,
+	BLOCK	= 0000000000000010,
+	CRATE	= 0000000000000100,
+
+	// Forest:
+	GRASS	= 0000000000001000,
+	TREE	= 0000000000010000
+};
+
+enum _entity_ranks {
+	// Generic:
+	PLAYER_RANK = 10,
+	BLOCK_RANK,
+	CRATE_RANK,
+
+	// Forest:
+	GRASS_RANK,
+	TREE_RANK
+};
+
+enum _moveTypes {
+	STEP,
+	JUMP,
+	SPECIAL
+};
+
+struct _Move {
+	char type;
+
+	// Step type:
+	char dir;
+	Move* next;
+};
+
+struct _Entity {
+	char type;
+
+	Move* moves;
+
+	// If two entities are fighting to move into the same spot and they're non-interactive with one another, then the one with a higher rank moves in.
+	int rank;
+
+	// A bit mask of the entities this interacts with, if they collide on the same tile.
+	int interactions;
+};
+
+struct _Cell {
+	void* occupant;
+	int occupant_type;
+	int background_type;
+	Entity* entity;
+};
+
+struct _Level {
+	Cell cell[15][15];
+};
+
+enum _colors {
+	FOREST_BG_R = 0,
+	FOREST_BG_G = 8,
+	FOREST_BG_B = 0,
+	FOREST_R = 0,
+	FOREST_G = 100,
+	FOREST_B = 0
+};
 
 enum {
 	X = 0,
@@ -136,16 +240,20 @@ struct _Program {
 	GLFWwindow* window;
 	int scrWidth;
 	int scrHeight;
+	int canvasX0;
+	int canvasX1;
+	int canvasY0;
+	int canvasY1;
 
 	// Rendering system objects:
 	GLuint fontShader;
 	GLuint frameShader;
 	GLuint bgShader;
 	GLuint arrowShader;
+	GLuint spriteShader;
 	GLuint* vao;
 	GLuint* vbo;
 	struct CharMap* Characters;
-	GLuint envTex;
 
 	// Interface system objects:
 	int cursor;
@@ -158,7 +266,19 @@ struct _Program {
 	int framesI;
 
 	// Game data:
+	char chapter;
+	char level;
+	Levels* levels;
+	Entity* player;
 	
+	// Generic textures:
+	GLuint doieTex;
+	GLuint blockTex;
+	GLuint crateTex;
+
+	// Forest textures:
+	GLuint grassTex;
+	GLuint treeTex;
 };
 
 // @Render functions:
@@ -186,6 +306,7 @@ Frame* frameNew (
 	double y0, double y1
 );
 void frameDraw (Program* program, Frame* frame);
+void imageDraw (Program* program, GLuint texture, int x, int y, int width, int height, char background);
 void bgDraw (Program* program);
 
 // @Utility functions:
@@ -194,3 +315,9 @@ void printShaderLog (GLuint shader);
 void printProgramLog (int prog);
 bool checkOpenGLError();
 GLFWwindow* createWindow();
+void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods);
+
+// @Game functions:
+void load_level (Program* program, int level);
+void draw_level (Program* program, int level);
+Entity* entityNew (char type);

@@ -1,5 +1,4 @@
 #include "header.h"
-Program* program;
 
 void init (Program* program) {
 	srand(time(NULL));
@@ -8,7 +7,7 @@ void init (Program* program) {
 int main (void) {
 	GLFWwindow* window = createWindow ();
 
-	program = renderInit (window);
+	Program* program = renderInit (window);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
 
 	init (program);
