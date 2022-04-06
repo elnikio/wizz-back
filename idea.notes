@@ -14,3 +14,23 @@ You push blocks and blocks interact with one another.
 Everything happens in discrete steps.
 
 You can rewind time once at any time during a level, this makes you 'leave' your body and watch the world revert its steps. Then you can stop the rewind and proceed moving through the level while your other body is waiting to appear.
+
+~~~ Forest ~~~
+
+Pot for cooking potions.
+
+Fruits for potionts.
+
+Animals that move towards fruits and eat them.
+
+A ring, which you can equip, enabling you to shoot a lightning strike.
+
+Trees can be set on fire (lightning ring).
+
+Cooked (lightning ring) animals attract predators.
+
+Animals have fixed paths, unless they're attracted by a fruit, or a cooked animal, or you, if they're a predator.
+
+They have a linear line of sight - a line in the direction they're looking. Cant look diagonal. Line is visible.
+
+When they are tracking a prey or walking towards a targetted fruit, their sprite changes.

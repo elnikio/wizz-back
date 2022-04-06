@@ -54,7 +54,7 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 	//printf("key: %d\naction: %d\n", key, action);
 }
 
-Entity* entityNew (char type) {
+Entity* entityNew (int type) {
 	Entity* entity = malloc(sizeof(Entity));
 	entity -> type = type;
 	entity -> moves = NULL;
@@ -68,6 +68,9 @@ Entity* entityNew (char type) {
 			break;
 		case CRATE:
 			entity -> rank = CRATE_RANK;
+			break;
+		case TURTLE:
+			entity -> rank = TURTLE_RANK;
 			break;
 	}
 	return entity;
@@ -201,7 +204,8 @@ void load_level (Program* program, int level) {
 				this -> cell [i][10].occupant_type = CRATE;
 				this -> cell [i][10].entity = entityNew (CRATE);
 			}
-
+			this -> cell [2][2].occupant_type = TURTLE;
+			this -> cell [2][2].entity = entityNew (TURTLE);
 			program -> level = this;
 			
 			break;
@@ -244,6 +248,9 @@ void tileDraw (Program* program, int x, int y, int tile_type, char background) {
 			break;
 		case CRATE:
 			tex = program -> crateTex;
+			break;
+		case TURTLE:
+			tex = program -> turtleUpTex;
 			break;
 
 		default:

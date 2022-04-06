@@ -63,7 +63,8 @@ enum _entities {
 
 	// Forest:
 	GRASS	= 0000000000001000,
-	TREE	= 0000000000010000
+	TREE	= 0000000000010000,
+	TURTLE	= 0000000000100000
 };
 
 enum _entity_ranks {
@@ -71,6 +72,7 @@ enum _entity_ranks {
 	PLAYER_RANK = 10,
 	BLOCK_RANK = 20,
 	CRATE_RANK = 5,
+	TURTLE_RANK = 12,
 
 	// Forest:
 	GRASS_RANK,
@@ -84,7 +86,7 @@ enum _moveTypes {
 };
 
 struct _Move {
-	char type;
+	int type;
 
 	// Step type:
 	char dir;
@@ -279,6 +281,10 @@ struct _Program {
 	// Forest textures:
 	GLuint grassTex;
 	GLuint treeTex;
+	GLuint turtleUpTex;
+	GLuint turtleDownTex;
+	GLuint turtleLeftTex;
+	GLuint turtleRightTex;
 };
 
 // @Render functions:
@@ -320,5 +326,5 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 // @Game functions:
 void load_level (Program* program, int level);
 void draw_level (Program* program, int level);
-Entity* entityNew (char type);
+Entity* entityNew (int type);
 void step_level (Program* program);
