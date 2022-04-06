@@ -33,6 +33,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> bgShader = createShaderProgram ("../shaders/vbg.glsl", "../shaders/fbg.glsl");
 	program -> arrowShader = createShaderProgram ("../shaders/varrow.glsl", "../shaders/farrow.glsl");
 	program -> spriteShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fsprite.glsl");
+	program -> shadowShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fshadow.glsl");
 	program -> vao = vao;
 	program -> vbo = vbo;
 	program -> frames = malloc(sizeof(Frame*) * 100);
@@ -55,12 +56,13 @@ Program* renderInit (GLFWwindow* window) {
 	// Import textures:
 	program -> grassTex = importTexture ("../sprites/grass.png");
 	program -> treeTex = importTexture ("../sprites/trunk.png");
-	program -> playerUpTex = importTexture ("../sprites/player_up.png");
-	program -> playerDownTex = importTexture ("../sprites/player_down.png");
-	program -> playerLeftTex = importTexture ("../sprites/player_left.png");
-	program -> playerRightTex = importTexture ("../sprites/player_right.png");
+	program -> playerUpTex = importTexture ("../sprites/hand_up.png");
+	program -> playerDownTex = importTexture ("../sprites/hand_down.png");
+	program -> playerLeftTex = importTexture ("../sprites/hand_left.png");
+	program -> playerRightTex = importTexture ("../sprites/hand_right.png");
 	program -> blockTex = importTexture ("../sprites/block.png");
 	program -> crateTex = importTexture ("../sprites/crate.png");
+	program -> timeStoneTex = importTexture ("../sprites/time_stone.png");
 	program -> playerDir = UP;
 
 	glEnable (GL_DEPTH_TEST);

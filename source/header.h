@@ -69,8 +69,8 @@ enum _entities {
 enum _entity_ranks {
 	// Generic:
 	PLAYER_RANK = 10,
-	BLOCK_RANK,
-	CRATE_RANK,
+	BLOCK_RANK = 20,
+	CRATE_RANK = 5,
 
 	// Forest:
 	GRASS_RANK,
@@ -246,6 +246,7 @@ struct _Program {
 	GLuint bgShader;
 	GLuint arrowShader;
 	GLuint spriteShader;
+	GLuint shadowShader;
 	GLuint* vao;
 	GLuint* vbo;
 	struct CharMap* Characters;
@@ -273,6 +274,7 @@ struct _Program {
 	GLuint playerRightTex;
 	GLuint blockTex;
 	GLuint crateTex;
+	GLuint timeStoneTex;
 
 	// Forest textures:
 	GLuint grassTex;

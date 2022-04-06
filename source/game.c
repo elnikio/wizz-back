@@ -63,6 +63,12 @@ Entity* entityNew (char type) {
 		case PLAYER:
 			entity -> rank = PLAYER_RANK;
 			break;
+		case BLOCK:
+			entity -> rank = BLOCK_RANK;
+			break;
+		case CRATE:
+			entity -> rank = CRATE_RANK;
+			break;
 	}
 	return entity;
 }
@@ -72,6 +78,61 @@ void entity_pop_move (Entity* entity) {
 	Move* second = entity -> moves -> next;
 	free (entity -> moves);
 	entity -> moves = second;
+}
+
+// Recursive function to push an object one tile in any of the four directions.
+// Since moves are handled recursively, there has to be some way of marking that an entity has already been in moved in step X, so that it doesn't get moved twice.
+char move_entity (Program* program, char i, char j, char dir) {
+	Level* level = program -> level;
+	Entity* entity = level -> cell[i][j].entity;
+	
+	int dX = 0;
+	int dY = 0;
+	switch (dir) {
+		case LEFT:
+			dX = -1;
+			break;
+		case RIGHT:
+			dX = +1;
+			break;
+		case UP:
+			dY = +1;
+			break;
+		case DOWN:
+			dY = -1;
+			break;
+		default:
+			return 0;
+	}
+	
+	// If there's nothing in the way, move freely:
+	if (level -> cell[i + dX][j + dY].entity == NULL) {
+		level -> cell[i + dX][j + dY].entity = entity;
+		level -> cell[i][j].entity = NULL;
+
+		return 1;
+	}
+
+	// If there's something in the way:
+	// 1. if the thing doesn't move this step, check if its rank:
+	//  1.1. if it has a higher rank, do nothing.
+	//  1.2. if it has a lower rank, call move_entity on it:
+	// 	 1.2.1. if move succeeds, proceed with this move.
+	// 	 1.2.2. if move fails, cancel this move.
+	// 2. if the thing moves in any direction other than towards this entity, proceed with move as if there was nothing there.
+	// 3. if the thing moves in the direction of this entity, check its rank:
+	//  3.1. if it has a higher rank, call move on this entity in the opposite direction:
+	// 	 3.1.1. if move succeeds, call move on other entity to this cell.
+	// 	 3.1.2. if move fails, nothing moves.
+	//  3.2. if it has a lower rank, call move on the entity:
+	//   3.2.1. if move succeeds, proceed with move on this.
+	//   3.2.2. if move fails, cancel move on this.
+	// 4. if there is nothing in the way:
+	//  4.1. if something is moving into the cell that this is trying to move to. check its rank:
+	//   4.1.1. if it has a higher rank, let it move and cancel this move.
+	//   4.2.2. if it has a lower rank, cancel its move and let this move.
+	//  4.2. if nothing is moving in the cell that this is trying to move to:
+	//   4.3. proceed with move.
 }
 
 void step_level (Program* program) {
@@ -86,31 +147,23 @@ void step_level (Program* program) {
 						case STEP:
 							switch (move -> dir) {
 								case LEFT:
-									if (i > 0) {
-										program -> level -> cell [i - 1][j].entity = entity;
-										program -> level -> cell [i][j].entity = NULL;
-									}
+									if (i > 0)
+									move_entity (program, i, j, move -> dir);
 									program -> playerDir = LEFT;
 									break;
 								case RIGHT:
-									if (i < 14) {
-										program -> level -> cell [i + 1][j].entity = entity;
-										program -> level -> cell [i][j].entity = NULL;
-									}
+									if (i < 14)
+									move_entity (program, i, j, move -> dir);
 									program -> playerDir = RIGHT;
 									break;
 								case UP:
-									if (j < 14) {
-										program -> level -> cell [i][j + 1].entity = entity;
-										program -> level -> cell [i][j].entity = NULL;
-									}
+									if (j < 14)
+									move_entity (program, i, j, move -> dir);
 									program -> playerDir = UP;
 									break;
 								case DOWN:
-									if (j > 0) {
-										program -> level -> cell [i][j - 1].entity = entity;
-										program -> level -> cell [i][j].entity = NULL;
-									}
+									if (j > 0)
+									move_entity (program, i, j, move -> dir);
 									program -> playerDir = DOWN;
 									break;
 							}
@@ -144,10 +197,9 @@ void load_level (Program* program, int level) {
 			}
 			this -> cell [4][4].entity = entityNew (PLAYER);
 			program -> player = this -> cell [4][4].entity;
-			this -> cell [2][4].occupant_type = CRATE;
-			this -> cell [6][6].occupant_type = TREE;
 			for (int i = 4; i < 10; i ++) {
-				this -> cell [i][10].occupant_type = BLOCK;
+				this -> cell [i][10].occupant_type = CRATE;
+				this -> cell [i][10].entity = entityNew (CRATE);
 			}
 
 			program -> level = this;
@@ -210,9 +262,7 @@ void tileDraw (Program* program, int x, int y, int tile_type, char background) {
 void draw_cell (Program* program, Cell* cell, int X, int Y) {
 	Entity* entity = cell -> entity;
 	if (entity != NULL) {
-		if (entity -> type == PLAYER) {
-			tileDraw (program, X, Y, PLAYER, FALSE);
-		}
+		tileDraw (program, X, Y, entity -> type, FALSE);
 	}
 }
 
