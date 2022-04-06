@@ -72,6 +72,10 @@ Entity* entityNew (int type) {
 		case TURTLE:
 			entity -> rank = TURTLE_RANK;
 			break;
+		case APPLE:
+			entity -> rank = APPLE_RANK;
+			break;
+
 	}
 	return entity;
 }
@@ -108,8 +112,12 @@ char move_entity (Program* program, char i, char j, char dir) {
 			return 0;
 	}
 	
-	// If there's nothing in the way, move freely:
+	// There is nothing in the way:
 	if (level -> cell[i + dX][j + dY].entity == NULL) {
+
+		// There is another entity contending for the cell:
+		// Fulfill the highest ranking entity, reject all the others.
+		
 		level -> cell[i + dX][j + dY].entity = entity;
 		level -> cell[i][j].entity = NULL;
 
@@ -206,6 +214,8 @@ void load_level (Program* program, int level) {
 			}
 			this -> cell [2][2].occupant_type = TURTLE;
 			this -> cell [2][2].entity = entityNew (TURTLE);
+			this -> cell [11][9].occupant_type = APPLE;
+			this -> cell [11][9].entity = entityNew (APPLE);
 			program -> level = this;
 			
 			break;
@@ -252,7 +262,9 @@ void tileDraw (Program* program, int x, int y, int tile_type, char background) {
 		case TURTLE:
 			tex = program -> turtleUpTex;
 			break;
-
+		case APPLE:
+			tex = program -> appleTex;
+			break;
 		default:
 			return;
 
@@ -268,9 +280,9 @@ void tileDraw (Program* program, int x, int y, int tile_type, char background) {
 
 void draw_cell (Program* program, Cell* cell, int X, int Y) {
 	Entity* entity = cell -> entity;
-	if (entity != NULL) {
+	tileDraw (program, X, Y, cell->background_type, TRUE);
+	if (entity != NULL)
 		tileDraw (program, X, Y, entity -> type, FALSE);
-	}
 }
 
 void draw_level (Program* program, int level) {
@@ -283,7 +295,7 @@ void draw_level (Program* program, int level) {
 	}
 	for (int i = -7; i <= 7; i ++) {
 		for (int j = -7; j <= 7; j ++) {
-			tileDraw (program, i, j, this -> cell [i + 7][j + 7].background_type, TRUE);
+			//tileDraw (program, i, j, this -> cell [i + 7][j + 7].background_type, TRUE);
 			draw_cell (program, &(this -> cell [i + 7][j + 7]), i, j);
 		}
 	}

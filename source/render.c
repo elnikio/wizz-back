@@ -64,6 +64,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> turtleDownTex = importTexture ("../sprites/turtle_down.png");
 	program -> turtleLeftTex = importTexture ("../sprites/turtle_left.png");
 	program -> turtleRightTex = importTexture ("../sprites/turtle_right.png");
+	program -> appleTex = importTexture ("../sprites/apple.png");
 	program -> blockTex = importTexture ("../sprites/block.png");
 	program -> crateTex = importTexture ("../sprites/crate.png");
 	program -> timeStoneTex = importTexture ("../sprites/time_stone.png");

@@ -64,7 +64,8 @@ enum _entities {
 	// Forest:
 	GRASS	= 0000000000001000,
 	TREE	= 0000000000010000,
-	TURTLE	= 0000000000100000
+	TURTLE	= 0000000000100000,
+	APPLE	= 0000000001000000
 };
 
 enum _entity_ranks {
@@ -73,6 +74,7 @@ enum _entity_ranks {
 	BLOCK_RANK = 20,
 	CRATE_RANK = 5,
 	TURTLE_RANK = 12,
+	APPLE_RANK = 2,
 
 	// Forest:
 	GRASS_RANK,
@@ -94,9 +96,10 @@ struct _Move {
 };
 
 struct _Entity {
-	char type;
+	int type;
 
 	Move* moves;
+	int step;
 
 	// If two entities are fighting to move into the same spot and they're non-interactive with one another, then the one with a higher rank moves in.
 	int rank;
@@ -276,6 +279,7 @@ struct _Program {
 	GLuint playerRightTex;
 	GLuint blockTex;
 	GLuint crateTex;
+	GLuint appleTex;
 	GLuint timeStoneTex;
 
 	// Forest textures:
