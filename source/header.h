@@ -336,5 +336,7 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 // @Game functions:
 void load_level (Program* program, int level);
 void draw_level (Program* program, int level);
+char move_entity (Program* program, char X, char Y, char dir);
 Entity* entityNew (Program* program, int type);
 void step_level (Program* program);
+void step_turtles (Program* program);

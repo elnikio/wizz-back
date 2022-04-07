@@ -22,7 +22,16 @@ void player_add_step (Program* program, char direction) {
 	player -> moves -> next = NULL;
 }
 
-void step_turtles (Program* program, char direction) {
+void step_turtles (Program* program) {
+	Entity* entity;
+	for (int i = 0; i < 15; i ++) {
+		for (int j = 0; j < 15; j ++) {
+			entity = program -> level -> cell[i][j].entity;
+			if (entity != NULL) if (entity -> type == TURTLE) {
+				move_entity (program, i, j, UP);
+			}
+		}
+	}
 }
 
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -284,22 +293,22 @@ void step_level (Program* program) {
 						case STEP:
 							switch (move -> dir) {
 								case LEFT:
-									if (i > 0)
+									if (i > 0 && (entity -> step < program -> step))
 									move_entity (program, i, j, move -> dir);
 									program -> playerDir = LEFT;
 									break;
 								case RIGHT:
-									if (i < 14)
+									if (i < 14 && (entity -> step < program -> step))
 									move_entity (program, i, j, move -> dir);
 									program -> playerDir = RIGHT;
 									break;
 								case UP:
-									if (j < 14)
+									if (j < 14 && (entity -> step < program -> step))
 									move_entity (program, i, j, move -> dir);
 									program -> playerDir = UP;
 									break;
 								case DOWN:
-									if (j > 0)
+									if (j > 0 && (entity -> step < program -> step))
 									move_entity (program, i, j, move -> dir);
 									program -> playerDir = DOWN;
 									break;
@@ -310,6 +319,7 @@ void step_level (Program* program) {
 			}
 		}
 	}
+	step_turtles (program);
 	(program -> step) ++;
 }
 
