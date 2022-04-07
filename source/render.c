@@ -41,6 +41,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> time = 0.0;
 	program -> chapter = FOREST;
 	program -> level = NULL;
+	program -> step = 0;
 
 	load_level (program, FOREST_1);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));

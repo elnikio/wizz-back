@@ -100,6 +100,7 @@ struct _Entity {
 
 	Move* moves;
 	int step;
+	char direction;
 
 	// If two entities are fighting to move into the same spot and they're non-interactive with one another, then the one with a higher rank moves in.
 	int rank;
@@ -269,6 +270,7 @@ struct _Program {
 	// Game data:
 	char chapter;
 	Level* level;
+	int step;
 	Entity* player;
 	
 	// Generic textures:

@@ -22,6 +22,9 @@ void player_add_step (Program* program, char direction) {
 	player -> moves -> next = NULL;
 }
 
+void step_turtles (Program* program, char direction) {
+}
+
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action > 0) {
 		switch (key) {
@@ -59,6 +62,8 @@ Entity* entityNew (int type) {
 	entity -> type = type;
 	entity -> moves = NULL;
 	entity -> interactions = 0;
+	entity -> step = 0;
+	entity -> direction = DOWN;
 	switch (type) {
 		case PLAYER:
 			entity -> rank = PLAYER_RANK;
@@ -82,16 +87,22 @@ Entity* entityNew (int type) {
 
 // This is used to delete the first move in the queue after it's been processed.
 void entity_pop_move (Entity* entity) {
-	Move* second = entity -> moves -> next;
-	free (entity -> moves);
-	entity -> moves = second;
+	if (entity -> moves != NULL) {
+		Move* second = NULL;
+		char multiple_moves = (entity -> moves -> next != NULL);
+		if (multiple_moves)
+			second = entity -> moves -> next;
+		free (entity -> moves);
+		entity -> moves = second;
+	}
+	entity -> step ++;
 }
 
 // Recursive function to push an object one tile in any of the four directions.
 // Since moves are handled recursively, there has to be some way of marking that an entity has already been in moved in step X, so that it doesn't get moved twice.
-char move_entity (Program* program, char i, char j, char dir) {
+char move_entity (Program* program, char X, char Y, char dir) {
 	Level* level = program -> level;
-	Entity* entity = level -> cell[i][j].entity;
+	Entity* entity = level -> cell[X][Y].entity;
 	
 	int dX = 0;
 	int dY = 0;
@@ -112,14 +123,65 @@ char move_entity (Program* program, char i, char j, char dir) {
 			return 0;
 	}
 	
-	// There is nothing in the way:
-	if (level -> cell[i + dX][j + dY].entity == NULL) {
+	// 1. There is nothing in the target cell:
+	if (level -> cell[X + dX][Y + dY].entity == NULL) {
 
-		// There is another entity contending for the cell:
-		// Fulfill the highest ranking entity, reject all the others.
+		// Fulfill the highest ranking entity (the alpha), reject all the others.
+		Entity* alpha = entity;
+		int alpha_X = X;
+		int alpha_Y = Y;
+		int alpha_rank = entity -> rank;
+		int i = -1;
+		int j = 1;
+		// Find the highest ranking contender, aka the alpha:
+		for (int k = 0; k < 4; (k ++) + (i *= -1) + (j *= -1)) {
+			// Does entity exist:
+			if (level -> cell[X + dX + i][Y + dY + j].entity != NULL) {
+				Entity* opponent = level -> cell[X + dX + i][Y + dY + j].entity;
+				// Get next move of entity:
+				Move* move = opponent -> moves;
+				// If opponent is moving in and has a higher rank, promote it alpha:
+				char advance;
+				if (move != NULL) if (move -> type == STEP) {
+					switch (dir) {
+						case LEFT:
+							advance = RIGHT;
+							break;
+						case RIGHT:
+							advance = LEFT;
+							break;
+						case UP:
+							advance = DOWN;
+							break;
+						case DOWN:
+							advance = UP;
+							break;
+					}
+					if (move -> dir == advance) if (opponent -> rank > alpha_rank) {
+						alpha_rank = opponent -> rank;
+						alpha_X = X + dX + i;
+						alpha_Y = Y + dY + j;
+						alpha = opponent;
+					}
+
+				}
+			}
+		}
+		// Reject all potential contenders who aren't the alpha:
+		for (int k = 0; k < 4; (k ++) + (i *= -1) + (j *= -1)) {
+			Entity* opponent = level -> cell[X + dX + i][Y + dY + j].entity;
+			// Does entity exist:
+			if (opponent != NULL) {
+				// Is entity the current designated alpha:
+				if ((X + dX + i != alpha_X) || (Y + dY + j != alpha_Y))
+					entity_pop_move (opponent);
+			}
+		}
 		
-		level -> cell[i + dX][j + dY].entity = entity;
-		level -> cell[i][j].entity = NULL;
+		// Advance the designated alpha to the target cell:
+		level -> cell[X + dX][Y + dY].entity = alpha;
+		level -> cell[X][Y].entity = NULL;
+		entity_pop_move (alpha);
 
 		return 1;
 	}
@@ -148,6 +210,7 @@ char move_entity (Program* program, char i, char j, char dir) {
 
 void step_level (Program* program) {
 	Entity* entity;
+	// Iterate through all cells:
 	for (int i = 0; i < 15; i ++) {
 		for (int j = 0; j < 15; j ++) {
 			entity = program -> level -> cell [i][j].entity;
@@ -185,6 +248,8 @@ void step_level (Program* program) {
 			}
 		}
 	}
+
+	program -> step ++;
 
 }
 
