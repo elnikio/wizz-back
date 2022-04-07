@@ -221,6 +221,7 @@ char move_entity (Program* program, char X, char Y, char dir) {
 }
 
 void step_level (Program* program) {
+
 	Entity* entity;
 	// Iterate through all cells:
 	for (int i = 0; i < 15; i ++) {
