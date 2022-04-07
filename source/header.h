@@ -107,6 +107,9 @@ struct _Entity {
 
 	// A bit mask of the entities this interacts with, if they collide on the same tile.
 	int interactions;
+
+	// MAKE A LINKED LIST OF ENTITIES SO THEY CAN BE ACCESSED MORE EFFICIENTLY.
+	Entity* next;
 };
 
 struct _Cell {
@@ -118,6 +121,7 @@ struct _Cell {
 
 struct _Level {
 	Cell cell[15][15];
+	Entity* entities;
 };
 
 enum _colors {
@@ -332,5 +336,5 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 // @Game functions:
 void load_level (Program* program, int level);
 void draw_level (Program* program, int level);
-Entity* entityNew (int type);
+Entity* entityNew (Program* program, int type);
 void step_level (Program* program);

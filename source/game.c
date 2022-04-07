@@ -57,13 +57,14 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 	//printf("key: %d\naction: %d\n", key, action);
 }
 
-Entity* entityNew (int type) {
+Entity* entityNew (Program* program, int type) {
 	Entity* entity = malloc(sizeof(Entity));
 	entity -> type = type;
 	entity -> moves = NULL;
 	entity -> interactions = 0;
 	entity -> step = 0;
 	entity -> direction = DOWN;
+	entity -> next = NULL;
 	switch (type) {
 		case PLAYER:
 			entity -> rank = PLAYER_RANK;
@@ -82,6 +83,17 @@ Entity* entityNew (int type) {
 			break;
 
 	}
+	/*
+	Level* level = program -> level;
+	if (level -> entities == NULL)
+		level -> entities = entity;
+	else {
+		Entity* last = level -> entities;
+		while (last -> next != NULL)
+			last = last -> next;
+		last -> next = entity;
+	}
+	*/
 	return entity;
 }
 
@@ -248,13 +260,13 @@ void step_level (Program* program) {
 			}
 		}
 	}
-
-	program -> step ++;
-
+	(program -> step) ++;
 }
 
 void load_level (Program* program, int level) {
 	Level* this = malloc(sizeof(Level));
+	program -> level = this;
+	this -> entities = NULL;
 
 	for (int i = 0; i < 15; i ++) {
 		for (int j = 0; j < 15; j ++) {
@@ -271,17 +283,16 @@ void load_level (Program* program, int level) {
 					this -> cell [i][j].background_type = GRASS;
 				}
 			}
-			this -> cell [4][4].entity = entityNew (PLAYER);
+			this -> cell [4][4].entity = entityNew (program, PLAYER);
 			program -> player = this -> cell [4][4].entity;
 			for (int i = 4; i < 10; i ++) {
 				this -> cell [i][10].occupant_type = CRATE;
-				this -> cell [i][10].entity = entityNew (CRATE);
+				this -> cell [i][10].entity = entityNew (program, CRATE);
 			}
 			this -> cell [2][2].occupant_type = TURTLE;
-			this -> cell [2][2].entity = entityNew (TURTLE);
+			this -> cell [2][2].entity = entityNew (program, TURTLE);
 			this -> cell [11][9].occupant_type = APPLE;
-			this -> cell [11][9].entity = entityNew (APPLE);
-			program -> level = this;
+			this -> cell [11][9].entity = entityNew (program, APPLE);
 			
 			break;
 	}
