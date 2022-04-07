@@ -54,7 +54,6 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 		step_level ();
 	}
 	*/
-	//printf("key: %d\naction: %d\n", key, action);
 }
 
 Entity* entityNew (Program* program, int type) {
@@ -83,7 +82,6 @@ Entity* entityNew (Program* program, int type) {
 			break;
 
 	}
-	/*
 	Level* level = program -> level;
 	if (level -> entities == NULL)
 		level -> entities = entity;
@@ -93,21 +91,22 @@ Entity* entityNew (Program* program, int type) {
 			last = last -> next;
 		last -> next = entity;
 	}
-	*/
 	return entity;
 }
 
 // This is used to delete the first move in the queue after it's been processed.
 void entity_pop_move (Entity* entity) {
+	if (entity != NULL) {
 	if (entity -> moves != NULL) {
 		Move* second = NULL;
-		char multiple_moves = (entity -> moves -> next != NULL);
+		char multiple_moves = ((entity -> moves -> next) != NULL);
 		if (multiple_moves)
 			second = entity -> moves -> next;
 		free (entity -> moves);
 		entity -> moves = second;
 	}
 	entity -> step ++;
+	}
 }
 
 // Recursive function to push an object one tile in any of the four directions.
@@ -143,11 +142,36 @@ char move_entity (Program* program, char X, char Y, char dir) {
 		int alpha_X = X;
 		int alpha_Y = Y;
 		int alpha_rank = entity -> rank;
-		int i = -1;
-		int j = 1;
+		int i;
+		int j;
 		// Find the highest ranking contender, aka the alpha:
-		for (int k = 0; k < 4; (k ++) + (i *= -1) + (j *= -1)) {
+		for (int k = 0; k < 4; k ++) {
+			switch (k) {
+				case 0:
+					i = +1;
+					j = 0;
+					break;
+				case 1:
+					i = -1;
+					j = 0;
+					break;
+				case 2:
+					i = 0;
+					j = +1;
+					break;
+				case 3:
+					i = 0;
+					j = -1;
+					break;
+			}
 			// Does entity exist:
+			if (
+				(X + dX + i >= 0) &&
+				(X + dX + i <= 14) &&
+				(Y + dY + j >= 0) &&
+				(Y + dY + j <= 14) &&
+				(dX + i != 0 || dY + j != 0)
+			)
 			if (level -> cell[X + dX + i][Y + dY + j].entity != NULL) {
 				Entity* opponent = level -> cell[X + dX + i][Y + dY + j].entity;
 				// Get next move of entity:
@@ -180,13 +204,39 @@ char move_entity (Program* program, char X, char Y, char dir) {
 			}
 		}
 		// Reject all potential contenders who aren't the alpha:
-		for (int k = 0; k < 4; (k ++) + (i *= -1) + (j *= -1)) {
-			Entity* opponent = level -> cell[X + dX + i][Y + dY + j].entity;
-			// Does entity exist:
-			if (opponent != NULL) {
-				// Is entity the current designated alpha:
-				if ((X + dX + i != alpha_X) || (Y + dY + j != alpha_Y))
-					entity_pop_move (opponent);
+		for (int k = 0; k < 4; k ++) {
+			switch (k) {
+				case 0:
+					i = +1;
+					j = 0;
+					break;
+				case 1:
+					i = -1;
+					j = 0;
+					break;
+				case 2:
+					i = 0;
+					j = +1;
+					break;
+				case 3:
+					i = 0;
+					j = -1;
+					break;
+			}
+			if (
+				(X + dX + i >= 0) &&
+				(X + dX + i <= 14) &&
+				(Y + dY + j >= 0) &&
+				(Y + dY + j <= 14) &&
+				(dX + i != 0 || dY + j != 0)
+			) {
+				Entity* opponent = level -> cell[X + dX + i][Y + dY + j].entity;
+				// Does entity exist:
+				if (opponent != NULL) {
+					// Is entity the current designated alpha:
+					if ((X + dX + i != alpha_X) || (Y + dY + j != alpha_Y))
+						entity_pop_move (opponent);
+				}
 			}
 		}
 		
@@ -256,7 +306,6 @@ void step_level (Program* program) {
 							}
 							break;
 					}
-					entity_pop_move (entity);
 				}
 			}
 		}
@@ -363,7 +412,6 @@ void draw_cell (Program* program, Cell* cell, int X, int Y) {
 }
 
 void draw_level (Program* program, int level) {
-	//printf ("screen size = %d, %d\n", program -> scrWidth, program -> scrHeight);
 
 	Level* this = NULL;
 	switch (level) {
