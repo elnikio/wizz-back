@@ -22,12 +22,31 @@ void player_add_step (Program* program, char direction) {
 	player -> moves -> next = NULL;
 }
 
+void entity_reflect_direction (Entity* entity) {
+	switch (entity -> direction) {
+					case LEFT:
+						entity -> direction = RIGHT;
+						break;
+					case RIGHT:
+						entity -> direction = LEFT;
+						break;
+					case UP:
+						entity -> direction = DOWN;
+						break;
+					case DOWN:
+						entity -> direction = UP;
+						break;
+	}
+}
+
 void step_turtles (Program* program) {
 	Entity* entity;
 	for (int i = 0; i < 15; i ++) {
 		for (int j = 0; j < 15; j ++) {
 			entity = program -> level -> cell[i][j].entity;
 			if (entity != NULL) if (entity -> type == TURTLE) if (entity -> step < program -> step) {
+					//entity_reflect_direction (entity);
+
 				switch (entity -> direction) {
 					case LEFT:
 						if (!move_entity (program, i, j, LEFT)) {
@@ -281,24 +300,27 @@ char move_entity (Program* program, char X, char Y, char dir) {
 					// If opponent is moving in and has a higher rank, promote it alpha:
 					char competitor = FALSE;
 					if (move != NULL) if (move -> type == STEP) {
-					switch (move -> dir) {
-						case LEFT:
-							if (!(i + 1) && !j) competitor = TRUE;
-							break;
-						case RIGHT:
-							if (!(i - 1) && !j) competitor = TRUE;
-							break;
-						case UP:
-							if (!(j - 1) && !i) competitor = TRUE;
-							break;
-						case DOWN:
-							if (!(j + 1) && !i) competitor = TRUE;
-							break;
-					}
-
-					// Is entity the current designated alpha:
-					if ((X + dX + i != alpha_X) || (Y + dY + j != alpha_Y))
-						entity_pop_move (opponent);
+						switch (move -> dir) {
+							case LEFT:
+								if (!(i + 1) && !j) competitor = TRUE;
+								break;
+							case RIGHT:
+								if (!(i - 1) && !j) competitor = TRUE;
+								break;
+							case UP:
+								if (!(j - 1) && !i) competitor = TRUE;
+								break;
+							case DOWN:
+								if (!(j + 1) && !i) competitor = TRUE;
+								break;
+						}
+	
+						// Is entity the current designated alpha:
+						if ((X + dX + i != alpha_X) || (Y + dY + j != alpha_Y)) {
+							entity_pop_move (opponent);
+							if (opponent -> type == TURTLE)
+								entity_reflect_direction (opponent);
+						}
 					}
 				}
 			}
@@ -311,6 +333,7 @@ char move_entity (Program* program, char X, char Y, char dir) {
 
 		return 1;
 	}
+	else return 0;
 
 	// If there's something in the way:
 	// 1. if the thing doesn't move this step, check if its rank:
@@ -413,6 +436,7 @@ void load_level (Program* program, int level) {
 			break;
 	}
 }
+
 
 void tileDraw (Program* program, int x, int y, int tile_type, char background) {
 	float spriteWidth = 84.0 * (program -> scrWidth) / SCR_HEIGHT_DEFAULT;
