@@ -109,6 +109,9 @@ void display (Program* program, double currentTime) {
 	glEnable(GL_MULTISAMPLE);
 
 	drawText (program, "Chapter 1 - The Hut.", program -> scrWidth / 50, program -> scrHeight / 50, 1.6, textColor, 1.0);
+	char* step_str = malloc(32);
+	snprintf (step_str, 32, "Step: %d", program -> step);
+	drawText (program, step_str, program -> scrWidth / 50, program -> scrHeight * 49 / 50 - 16, 1.6, textColor, 1.0);
 	windowResized = FALSE;
 }
 

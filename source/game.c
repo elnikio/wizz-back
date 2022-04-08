@@ -28,7 +28,32 @@ void step_turtles (Program* program) {
 		for (int j = 0; j < 15; j ++) {
 			entity = program -> level -> cell[i][j].entity;
 			if (entity != NULL) if (entity -> type == TURTLE) if (entity -> step < program -> step) {
-				move_entity (program, i, j, UP);
+				switch (entity -> direction) {
+					case LEFT:
+						if (!move_entity (program, i, j, LEFT)) {
+							move_entity (program, i, j, RIGHT);
+							entity -> direction = RIGHT;
+						}
+						break;
+					case RIGHT:
+						if (!move_entity (program, i, j, RIGHT)) {
+							move_entity (program, i, j, LEFT);
+							entity -> direction = LEFT;
+						}
+						break;
+					case UP:
+						if (!move_entity (program, i, j, UP)) {
+							move_entity (program, i, j, DOWN);
+							entity -> direction = DOWN;
+						}
+						break;
+					case DOWN:
+						if (!move_entity (program, i, j, DOWN)) {
+							move_entity (program, i, j, UP);
+							entity -> direction = UP;
+						}
+						break;
+				}
 			}
 		}
 	}
@@ -381,6 +406,7 @@ void load_level (Program* program, int level) {
 			}
 			this -> cell [2][2].occupant_type = TURTLE;
 			this -> cell [2][2].entity = entityNew (program, TURTLE);
+			this -> cell[2][2].entity -> direction = RIGHT;
 			this -> cell [11][9].occupant_type = APPLE;
 			this -> cell [11][9].entity = entityNew (program, APPLE);
 			
