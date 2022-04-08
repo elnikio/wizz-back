@@ -115,7 +115,7 @@ void entity_pop_move (Entity* entity) {
 		entity -> moves = second;
 	}
 	if (entity -> step < program -> step)
-		entity -> step ++;
+		entity -> step = program -> step;
 	}
 }
 
@@ -127,17 +127,26 @@ char move_entity (Program* program, char X, char Y, char dir) {
 	
 	int dX = 0;
 	int dY = 0;
+
 	switch (dir) {
 		case LEFT:
+			if (X <= 0)
+				return 0;
 			dX = -1;
 			break;
 		case RIGHT:
+			if (X >= 14)
+				return 0;
 			dX = +1;
 			break;
 		case UP:
+			if (Y >= 14)
+				return 0;
 			dY = +1;
 			break;
 		case DOWN:
+			if (Y <= 0)
+				return 0;
 			dY = -1;
 			break;
 		default:
@@ -187,23 +196,23 @@ char move_entity (Program* program, char X, char Y, char dir) {
 				// Get next move of entity:
 				Move* move = opponent -> moves;
 				// If opponent is moving in and has a higher rank, promote it alpha:
-				char advance;
+				char competitor = FALSE;
 				if (move != NULL) if (move -> type == STEP) {
-					switch (dir) {
+					switch (move -> dir) {
 						case LEFT:
-							advance = RIGHT;
+							if (!(i + 1) && !j) competitor = TRUE;
 							break;
 						case RIGHT:
-							advance = LEFT;
+							if (!(i - 1) && !j) competitor = TRUE;
 							break;
 						case UP:
-							advance = DOWN;
+							if (!(j - 1) && !i) competitor = TRUE;
 							break;
 						case DOWN:
-							advance = UP;
+							if (!(j + 1) && !i) competitor = TRUE;
 							break;
 					}
-					if (move -> dir == advance) if (opponent -> rank > alpha_rank) {
+					if (competitor) if (opponent -> rank > alpha_rank) {
 						alpha_rank = opponent -> rank;
 						alpha_X = X + dX + i;
 						alpha_Y = Y + dY + j;
@@ -243,30 +252,29 @@ char move_entity (Program* program, char X, char Y, char dir) {
 				Entity* opponent = level -> cell[X + dX + i][Y + dY + j].entity;
 				// Does entity exist:
 				if (opponent != NULL) {
-					/*
 					Move* move = opponent -> moves;
-					char advance;
+					// If opponent is moving in and has a higher rank, promote it alpha:
+					char competitor = FALSE;
 					if (move != NULL) if (move -> type == STEP) {
-						switch (dir) {
-							case LEFT:
-								advance = RIGHT;
-								break;
-							case RIGHT:
-								advance = LEFT;
-								break;
-							case UP:
-								advance = DOWN;
-								break;
-							case DOWN:
-								advance = UP;
-								break;
-						}
-					if (move -> dir == advance) if (opponent -> rank > alpha_rank) {
-					*/
+					switch (move -> dir) {
+						case LEFT:
+							if (!(i + 1) && !j) competitor = TRUE;
+							break;
+						case RIGHT:
+							if (!(i - 1) && !j) competitor = TRUE;
+							break;
+						case UP:
+							if (!(j - 1) && !i) competitor = TRUE;
+							break;
+						case DOWN:
+							if (!(j + 1) && !i) competitor = TRUE;
+							break;
+					}
 
 					// Is entity the current designated alpha:
 					if ((X + dX + i != alpha_X) || (Y + dY + j != alpha_Y))
 						entity_pop_move (opponent);
+					}
 				}
 			}
 		}
@@ -316,22 +324,22 @@ void step_level (Program* program) {
 						case STEP:
 							switch (move -> dir) {
 								case LEFT:
-									if (i > 0 && (entity -> step < program -> step))
+									if (entity -> step < program -> step)
 									move_entity (program, i, j, move -> dir);
 									program -> playerDir = LEFT;
 									break;
 								case RIGHT:
-									if (i < 14 && (entity -> step < program -> step))
+									if (entity -> step < program -> step)
 									move_entity (program, i, j, move -> dir);
 									program -> playerDir = RIGHT;
 									break;
 								case UP:
-									if (j < 14 && (entity -> step < program -> step))
+									if (entity -> step < program -> step)
 									move_entity (program, i, j, move -> dir);
 									program -> playerDir = UP;
 									break;
 								case DOWN:
-									if (j > 0 && (entity -> step < program -> step))
+									if (entity -> step < program -> step)
 									move_entity (program, i, j, move -> dir);
 									program -> playerDir = DOWN;
 									break;
