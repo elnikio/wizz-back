@@ -27,7 +27,7 @@ void step_turtles (Program* program) {
 	for (int i = 0; i < 15; i ++) {
 		for (int j = 0; j < 15; j ++) {
 			entity = program -> level -> cell[i][j].entity;
-			if (entity != NULL) if (entity -> type == TURTLE) {
+			if (entity != NULL) if (entity -> type == TURTLE) if (entity -> step < program -> step) {
 				move_entity (program, i, j, UP);
 			}
 		}
@@ -114,7 +114,8 @@ void entity_pop_move (Entity* entity) {
 		free (entity -> moves);
 		entity -> moves = second;
 	}
-	entity -> step ++;
+	if (entity -> step < program -> step)
+		entity -> step ++;
 	}
 }
 
@@ -242,6 +243,27 @@ char move_entity (Program* program, char X, char Y, char dir) {
 				Entity* opponent = level -> cell[X + dX + i][Y + dY + j].entity;
 				// Does entity exist:
 				if (opponent != NULL) {
+					/*
+					Move* move = opponent -> moves;
+					char advance;
+					if (move != NULL) if (move -> type == STEP) {
+						switch (dir) {
+							case LEFT:
+								advance = RIGHT;
+								break;
+							case RIGHT:
+								advance = LEFT;
+								break;
+							case UP:
+								advance = DOWN;
+								break;
+							case DOWN:
+								advance = UP;
+								break;
+						}
+					if (move -> dir == advance) if (opponent -> rank > alpha_rank) {
+					*/
+
 					// Is entity the current designated alpha:
 					if ((X + dX + i != alpha_X) || (Y + dY + j != alpha_Y))
 						entity_pop_move (opponent);
@@ -280,6 +302,7 @@ char move_entity (Program* program, char X, char Y, char dir) {
 }
 
 void step_level (Program* program) {
+	(program -> step) ++;
 
 	Entity* entity;
 	// Iterate through all cells:
@@ -320,7 +343,6 @@ void step_level (Program* program) {
 		}
 	}
 	step_turtles (program);
-	(program -> step) ++;
 }
 
 void load_level (Program* program, int level) {
