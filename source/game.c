@@ -686,10 +686,32 @@ void draw_cell (Program* program, Cell* cell, int X, int Y) {
 
 void draw_level (Program* program, int level) {
 
+	vec3 textColor = {1.0, 0.0, 0.0};
+	switch (program -> chapter) {
+		case TITLE:
+			glClearColor ((float)TITLE_BG_R / 255, (float)TITLE_BG_G / 255, (float)TITLE_BG_B / 255, 1.0);
+			textColor[X] = sin(program -> time * 100);
+			textColor[Y] = sin(program -> time * 1000);
+			textColor[Z] = 1.0 - (textColor[X] + textColor[Y]);
+
+			break;
+
+		case FOREST:
+			glClearColor ((float)FOREST_BG_R / 255, (float)FOREST_BG_G / 255, (float)FOREST_BG_B / 255, 1.0);
+			textColor[X] = (float)FOREST_R / 255;
+			textColor[Y] = (float)FOREST_G / 255;
+			textColor[Z] = (float)FOREST_B / 255;
+			break;
+	}
+
 	Level* this = NULL;
 	switch (level) {
 		case FOREST_1:
+			drawTextCentered (program, "movement: arrow keys", 880, 360, 1.2, textColor, 1.0);
+			drawTextCentered (program, "wait: SPACE", 880, 320, 1.2, textColor, 1.0);
+			drawTextCentered (program, "time moves when you move.", 880, 280, 1.2, textColor, 1.0);
 			this = program -> level;
+			break;
 	}
 	for (int i = -7; i <= 7; i ++) {
 		for (int j = -7; j <= 7; j ++) {

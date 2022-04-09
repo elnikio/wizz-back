@@ -90,8 +90,8 @@ enum _entity_ranks {
 	// Generic:
 	PLAYER_RANK = 10,
 	BLOCK_RANK = 20,
-	CRATE_RANK = 5,
-	TURTLE_RANK = 12,
+	CRATE_RANK = 8,
+	TURTLE_RANK = 5,
 	APPLE_RANK = 2,
 
 	// Forest:

@@ -34,3 +34,19 @@ Animals have fixed paths, unless they're attracted by a fruit, or a cooked anima
 They have a linear line of sight - a line in the direction they're looking. Cant look diagonal. Line is visible.
 
 When they are tracking a prey or walking towards a targetted fruit, their sprite changes.
+
+~~~ Stove ~~~
+
+Stove melts ice, cooks food, kills animals, burns cooked food, evaporates water.
+Bolt ring does the same, but also pushes stuff.
+
+Turtles are attracted to uncooked apples. They are indifferent to frozen apples.
+
+~~~ World and Overworld ~~~
+
+Puzzles are in World.
+You enter Overworld (grid of puzzles) by jumping in the couldron.
+In the overworld at first there is only on unlocked cell.
+In the overworld you can freely move between unlocked cells.
+In every puzzle in World there is a couldron and you can place combinations of items in it to craft spells.
+When you craft a spell, the couldron lights up, and if you jump in it then (you can jump at any point), you get to cast the spell in the overworld to move to a non-unlocked location. Spells are like chess moves. The first spell is given to you in the first level - a papchment piece with the products needed on the left side and a chess piece on the right side. Every spell is represented by a chess piece. In the overworld, there are three types of cells - puzzle cell, non-blocking empty cell, and blocking empty cell. For example, if you cook up a queen cell, you can move in any of the 8 directions, passing through non-blocking empty cells, until you hit a non-empty cell. If there is no non-empty cell to hit, you can't make the move.
