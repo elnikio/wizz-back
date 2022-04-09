@@ -491,7 +491,26 @@ char move_entity (Program* program, char X, char Y, char dir) {
 
 		return 1;
 	}
-	else return 0;
+	// There is something in the way:
+	else {
+		// See if you can push it:
+		if ((level -> cell[X + dX][Y + dY].entity -> rank) <= (level -> cell[X][Y].entity -> rank)) {
+			// If you succeed in pushing it, move in on it's spot.
+			if (move_entity (program, X + dX, Y + dY, dir)) {
+				level -> cell[X + dX][Y + dY].entity = entity;
+				level -> cell[X][Y].entity = NULL;
+				entity_pop_move (entity);
+				return 1;
+			}
+			// If not, cancel move:
+			else
+				return 0;
+		}
+		// It's too heavy:
+		else {
+			return 0;
+		}
+	}
 
 	// If there's something in the way:
 	// 1. if the thing doesn't move this step, check if its rank:
@@ -582,8 +601,14 @@ void load_level (Program* program, int level) {
 			this -> cell [4][4].entity = entityNew (program, PLAYER);
 			program -> player = this -> cell [4][4].entity;
 			for (int i = 4; i < 10; i ++) {
-				this -> cell [i][10].occupant_type = CRATE;
-				this -> cell [i][10].entity = entityNew (program, CRATE);
+				if (i % 2 == 0) {
+					this -> cell [i][10].occupant_type = BLOCK;
+					this -> cell [i][10].entity = entityNew (program, BLOCK);
+				}
+				else {
+					this -> cell [i][10].occupant_type = CRATE;
+					this -> cell [i][10].entity = entityNew (program, CRATE);
+				}
 			}
 			this -> cell [2][2].occupant_type = TURTLE;
 			this -> cell [2][2].entity = entityNew (program, TURTLE);
