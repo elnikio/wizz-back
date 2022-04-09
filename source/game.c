@@ -193,6 +193,12 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 				player_add_step (program, DOWN);
 				step_level (program);
 				break;
+			case KEY_SPACE:
+				step_level (program);
+				break;
+			case KEY_R:
+				load_level (program, program -> level_id);
+				break;
 			default:
 				return;
 		}
@@ -709,7 +715,8 @@ void draw_level (Program* program, int level) {
 		case FOREST_1:
 			drawTextCentered (program, "movement: arrow keys", 880, 360, 1.2, textColor, 1.0);
 			drawTextCentered (program, "wait: SPACE", 880, 320, 1.2, textColor, 1.0);
-			drawTextCentered (program, "time moves when you move.", 880, 280, 1.2, textColor, 1.0);
+			drawTextCentered (program, "restart: R", 880, 280, 1.2, textColor, 1.0);
+			drawTextCentered (program, "time moves when you move.", 880, 240, 1.2, textColor, 1.0);
 			this = program -> level;
 			break;
 	}

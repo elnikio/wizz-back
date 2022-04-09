@@ -209,7 +209,7 @@ void imageDraw (Program* program, GLuint texture, int x, int y, int width, int h
 
 	uniformI (program -> spriteShader, "chapter", program -> chapter);
 	uniformI (program -> spriteShader, "background", background);
-	//uniformF (program -> spriteShader, "time", (const GLfloat) glfwGetTime ());
+	uniformF (program -> spriteShader, "realtime", (const GLfloat) glfwGetTime ());
 	uniformF (program -> spriteShader, "time", program -> time);
 
 	glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);

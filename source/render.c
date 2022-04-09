@@ -41,6 +41,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> time = 0.0;
 	program -> chapter = FOREST;
 	program -> level = NULL;
+	program -> level_id = FOREST_1;
 	program -> step = 0;
 	program -> screen = LEVEL_SCREEN;
 	program -> sparcles = NULL;
@@ -51,7 +52,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> option_music = FALSE;
 	program -> running = TRUE;
 
-	load_level (program, FOREST_1);
+	load_level (program, program -> level_id);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
 
 	glfwSetKeyCallback(program -> window, keyboard_callback);

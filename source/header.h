@@ -38,7 +38,9 @@ enum _keys {
 	KEY_UP = 265,
 	KEY_DOWN = 264,
 	KEY_ENTER = 257,
-	KEY_ESC = 256
+	KEY_ESC = 256,
+	KEY_SPACE = 32,
+	KEY_R = 82
 };
 
 enum _titleMenuOptions {
@@ -328,6 +330,7 @@ struct _Program {
 	char option_fullscreen;
 	char option_sound_fx;
 	char option_music;
+	int level_id;
 	Level* level;
 	int step;
 	Entity* player;
