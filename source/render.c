@@ -39,11 +39,11 @@ Program* renderInit (GLFWwindow* window) {
 	program -> frames = malloc(sizeof(Frame*) * 100);
 	program -> framesI = 0;
 	program -> time = 0.0;
-	program -> chapter = FOREST;
+	program -> chapter = TITLE;
 	program -> level = NULL;
 	program -> level_id = FOREST_1;
 	program -> step = 0;
-	program -> screen = LEVEL_SCREEN;
+	program -> screen = TITLE_SCREEN;
 	program -> sparcles = NULL;
 	program -> titleMenuOption = CONTINUE;
 	program -> optionsMenuOption = FULLSCREEN;
