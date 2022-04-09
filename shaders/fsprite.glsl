@@ -30,8 +30,8 @@ uniform float time;
 #define FOREST_BG_B 0
 
 
-#define FOREST 0
-#define TITLE 1
+#define TITLE 0
+#define FOREST 1
 
 void main (void) {
 	vec3 sprite_color = vec3 (1.0, 1.0, 1.0);

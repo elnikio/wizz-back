@@ -39,10 +39,10 @@ Program* renderInit (GLFWwindow* window) {
 	program -> frames = malloc(sizeof(Frame*) * 100);
 	program -> framesI = 0;
 	program -> time = 0.0;
-	program -> chapter = TITLE;
+	program -> chapter = FOREST;
 	program -> level = NULL;
 	program -> step = 0;
-	program -> screen = TITLE_SCREEN;
+	program -> screen = LEVEL_SCREEN;
 	program -> sparcles = NULL;
 	program -> titleMenuOption = CONTINUE;
 	program -> optionsMenuOption = FULLSCREEN;
@@ -104,9 +104,10 @@ void display (Program* program, double currentTime) {
 	switch (program -> chapter) {
 		case TITLE:
 			glClearColor ((float)TITLE_BG_R / 255, (float)TITLE_BG_G / 255, (float)TITLE_BG_B / 255, 1.0);
-			textColor[X] = (float)TITLE_R / 255;
-			textColor[Y] = (float)TITLE_G / 255;
-			textColor[Z] = (float)TITLE_B / 255;
+			textColor[X] = sin(program -> time * 100);
+			textColor[Y] = sin(program -> time * 1000);
+			textColor[Z] = 1.0 - (textColor[X] + textColor[Y]);
+
 			break;
 
 		case FOREST:
@@ -116,9 +117,6 @@ void display (Program* program, double currentTime) {
 			textColor[Z] = (float)FOREST_B / 255;
 			break;
 	}
-	textColor[X] = sin(program -> time * 100);
-	textColor[Y] = sin(program -> time * 1000);
-	textColor[Z] = 1.0 - (textColor[X] + textColor[Y]);
 
 	glClear (GL_DEPTH_BUFFER_BIT);
 	glClear (GL_COLOR_BUFFER_BIT);

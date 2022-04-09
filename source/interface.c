@@ -207,7 +207,7 @@ void imageDraw (Program* program, GLuint texture, int x, int y, int width, int h
 	uniformF (program -> spriteShader, "y0", UIy0);
 	uniformF (program -> spriteShader, "y1", UIy1);
 
-	uniformI (program -> spriteShader, "chapter", FOREST);
+	uniformI (program -> spriteShader, "chapter", program -> chapter);
 	uniformI (program -> spriteShader, "background", background);
 	//uniformF (program -> spriteShader, "time", (const GLfloat) glfwGetTime ());
 	uniformF (program -> spriteShader, "time", program -> time);
