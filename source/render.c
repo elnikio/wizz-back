@@ -39,11 +39,11 @@ Program* renderInit (GLFWwindow* window) {
 	program -> frames = malloc(sizeof(Frame*) * 100);
 	program -> framesI = 0;
 	program -> time = 0.0;
-	program -> chapter = TITLE;
+	program -> chapter = FOREST;
 	program -> level = NULL;
 	program -> level_id = FOREST_1;
 	program -> step = 0;
-	program -> screen = TITLE_SCREEN;
+	program -> screen = LEVEL_SCREEN;
 	program -> sparcles = NULL;
 	program -> titleMenuOption = CONTINUE;
 	program -> optionsMenuOption = FULLSCREEN;
@@ -51,6 +51,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> option_sound_fx = FALSE;
 	program -> option_music = FALSE;
 	program -> running = TRUE;
+	program -> pusher = NULL;
 
 	load_level (program, program -> level_id);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));

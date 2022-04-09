@@ -336,6 +336,7 @@ struct _Program {
 	Entity* player;
 	Sparcle* sparcles;
 	char running;
+	Entity* pusher;
 	
 	// Generic textures:
 	char playerDir;

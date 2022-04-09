@@ -144,24 +144,28 @@ void step_turtles (Program* program) {
 				switch (entity -> direction) {
 					case LEFT:
 						if (!move_entity (program, i, j, LEFT)) {
+							program -> pusher = NULL;
 							move_entity (program, i, j, RIGHT);
 							entity -> direction = RIGHT;
 						}
 						break;
 					case RIGHT:
 						if (!move_entity (program, i, j, RIGHT)) {
+							program -> pusher = NULL;
 							move_entity (program, i, j, LEFT);
 							entity -> direction = LEFT;
 						}
 						break;
 					case UP:
 						if (!move_entity (program, i, j, UP)) {
+							program -> pusher = NULL;
 							move_entity (program, i, j, DOWN);
 							entity -> direction = DOWN;
 						}
 						break;
 					case DOWN:
 						if (!move_entity (program, i, j, DOWN)) {
+							program -> pusher = NULL;
 							move_entity (program, i, j, UP);
 							entity -> direction = UP;
 						}
@@ -499,8 +503,10 @@ char move_entity (Program* program, char X, char Y, char dir) {
 	}
 	// There is something in the way:
 	else {
+		if (program -> pusher == NULL)
+			program -> pusher = entity;
 		// See if you can push it:
-		if ((level -> cell[X + dX][Y + dY].entity -> rank) <= (level -> cell[X][Y].entity -> rank)) {
+		if ((level -> cell[X + dX][Y + dY].entity -> rank) <= (program -> pusher -> rank)) {
 			// If you succeed in pushing it, move in on it's spot.
 			if (move_entity (program, X + dX, Y + dY, dir)) {
 				level -> cell[X + dX][Y + dY].entity = entity;
@@ -546,6 +552,7 @@ void step_level (Program* program) {
 	Entity* entity;
 	// Iterate through all cells:
 	for (int i = 0; i < 15; i ++) {
+		program -> pusher = NULL;
 		for (int j = 0; j < 15; j ++) {
 			entity = program -> level -> cell [i][j].entity;
 			if (entity != NULL) {
@@ -555,23 +562,31 @@ void step_level (Program* program) {
 						case STEP:
 							switch (move -> dir) {
 								case LEFT:
-									if (entity -> step < program -> step)
-									move_entity (program, i, j, move -> dir);
+									if (entity -> step < program -> step) {
+										program -> pusher = NULL;
+										move_entity (program, i, j, move -> dir);
+									}
 									program -> playerDir = LEFT;
 									break;
 								case RIGHT:
-									if (entity -> step < program -> step)
-									move_entity (program, i, j, move -> dir);
+									if (entity -> step < program -> step) {
+										program -> pusher = NULL;
+										move_entity (program, i, j, move -> dir);
+									}
 									program -> playerDir = RIGHT;
 									break;
 								case UP:
-									if (entity -> step < program -> step)
-									move_entity (program, i, j, move -> dir);
+									if (entity -> step < program -> step) {
+										program -> pusher = NULL;
+										move_entity (program, i, j, move -> dir);
+									}
 									program -> playerDir = UP;
 									break;
 								case DOWN:
-									if (entity -> step < program -> step)
-									move_entity (program, i, j, move -> dir);
+									if (entity -> step < program -> step) {
+										program -> pusher = NULL;
+										move_entity (program, i, j, move -> dir);
+									}
 									program -> playerDir = DOWN;
 									break;
 							}
