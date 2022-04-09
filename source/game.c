@@ -173,6 +173,7 @@ void step_turtles (Program* program) {
 }
 
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
+	printf ("KEYY = %d\n", key);
 	if (program -> screen == LEVEL_SCREEN) {
 	if (action > 0) {
 		switch (key) {
@@ -207,8 +208,57 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 				if (program -> titleMenuOption < 3)
 					program -> titleMenuOption ++;
 				break;
+			case KEY_ENTER:
+				if (program -> titleMenuOption == OPTIONS)
+					program -> screen = OPTIONS_SCREEN;
+				if (program -> titleMenuOption == QUIT)
+					program -> running = FALSE;
+				break;
 		}
 	}
+	else if (program -> screen == OPTIONS_SCREEN && action == 1) {
+		switch (key) {
+			case KEY_UP:
+				if (program -> optionsMenuOption > 0)
+					program -> optionsMenuOption --;
+				break;
+			case KEY_DOWN:
+				if (program -> optionsMenuOption < 2)
+					program -> optionsMenuOption ++;
+				break;
+			case KEY_ENTER:
+				switch (program -> optionsMenuOption) {
+					case FULLSCREEN:
+						program -> option_fullscreen = !(program -> option_fullscreen);
+						break;
+					case SOUND_FX:
+						program -> option_sound_fx = !(program -> option_sound_fx);
+						break;
+					case MUSIC:
+						program -> option_music = !(program -> option_music);
+						break;
+				}
+				break;
+			case KEY_ESC:
+					program -> screen = TITLE_SCREEN;
+				break;
+
+		}
+	}
+	/*
+	else if (program -> screen == TITLE_SCREEN && action == 1) {
+		switch (key) {
+			case KEY_UP:
+				if (program -> titleMenuOption > 0)
+					program -> titleMenuOption --;
+				break;
+			case KEY_DOWN:
+				if (program -> titleMenuOption < 3)
+					program -> titleMenuOption ++;
+				break;
+		}
+	}*/
+
 	/*
 	if (key that moves player) {
 		player_add_step ();

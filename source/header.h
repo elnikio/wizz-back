@@ -36,7 +36,9 @@ enum _keys {
 	KEY_RIGHT = 262,
 	KEY_LEFT = 263,
 	KEY_UP = 265,
-	KEY_DOWN = 264
+	KEY_DOWN = 264,
+	KEY_ENTER = 257,
+	KEY_ESC = 256
 };
 
 enum _titleMenuOptions {
@@ -44,6 +46,12 @@ enum _titleMenuOptions {
 	NEW_GAME,
 	OPTIONS,
 	QUIT
+};
+
+enum _optionsMenuOptions {
+	FULLSCREEN = 0,
+	SOUND_FX,
+	MUSIC
 };
 
 enum _directions {
@@ -179,7 +187,8 @@ enum {
 
 enum _screens {
 	TITLE_SCREEN,
-	LEVEL_SCREEN
+	LEVEL_SCREEN,
+	OPTIONS_SCREEN
 
 };
 
@@ -315,10 +324,15 @@ struct _Program {
 	char chapter;
 	TitleScreen* titleScreen;
 	char titleMenuOption;
+	char optionsMenuOption;
+	char option_fullscreen;
+	char option_sound_fx;
+	char option_music;
 	Level* level;
 	int step;
 	Entity* player;
 	Sparcle* sparcles;
+	char running;
 	
 	// Generic textures:
 	char playerDir;
@@ -332,6 +346,8 @@ struct _Program {
 	GLuint timeStoneTex;
 	GLuint sparcleTex;
 	GLuint gliffTex;
+	GLuint boxTex;
+	GLuint checkboxTex;
 
 	// Forest textures:
 	GLuint titleTex1;

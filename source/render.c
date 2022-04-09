@@ -45,6 +45,11 @@ Program* renderInit (GLFWwindow* window) {
 	program -> screen = TITLE_SCREEN;
 	program -> sparcles = NULL;
 	program -> titleMenuOption = CONTINUE;
+	program -> optionsMenuOption = FULLSCREEN;
+	program -> option_fullscreen = FALSE;
+	program -> option_sound_fx = FALSE;
+	program -> option_music = FALSE;
+	program -> running = TRUE;
 
 	load_level (program, FOREST_1);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
@@ -74,6 +79,8 @@ Program* renderInit (GLFWwindow* window) {
 	program -> timeStoneTex = importTexture ("../sprites/time_stone.png");
 	program -> sparcleTex = importTexture ("../sprites/sparcle.png");
 	program -> gliffTex = importTexture ("../sprites/gliff.png");
+	program -> boxTex = importTexture ("../sprites/box.png");
+	program -> checkboxTex = importTexture ("../sprites/check_box.png");
 	program -> playerDir = UP;
 
 	glEnable (GL_DEPTH_TEST);
@@ -122,7 +129,9 @@ void display (Program* program, double currentTime) {
 	glDrawBuffer (GL_FRONT);
 	glEnable(GL_MULTISAMPLE);
 
-	if (program -> screen == TITLE_SCREEN) {
+
+	// Menu:
+	if (program -> screen == TITLE_SCREEN || program -> screen == OPTIONS_SCREEN) {
 		imageDraw (program, program -> titleTex1,
 			0,
 			0,
@@ -137,6 +146,10 @@ void display (Program* program, double currentTime) {
 		step_sparcles(program);
 		drawTextCentered (program, "MAGICAL HAND OF", 700, 720, 3.0, textColor, 1.0);
 		drawTextCentered (program, "MAGIC", 1270, 720, 6.0, textColor, 1.0);
+	}
+
+	// Title Screen:
+	if (program -> screen == TITLE_SCREEN) {
 		
 		drawTextCentered (program, "continue", 950, 360, 1.6, textColor, 1.0);
 		drawTextCentered (program, "new game", 950, 315, 1.6, textColor, 1.0);
@@ -181,6 +194,77 @@ void display (Program* program, double currentTime) {
 				break;
 		}
 	}
+
+	// Options Screen:
+	if (program -> screen == OPTIONS_SCREEN) {
+		
+		drawTextCentered (program, "fullscreen", 950, 360, 1.6, textColor, 1.0);
+		GLuint box;
+		box = program -> boxTex;
+		if (program -> option_fullscreen)
+			box = program -> checkboxTex;
+		imageDraw (program, box,
+			+ (program -> scrWidth) * 0.14,
+			- (program -> scrHeight) * 0.32,
+			(int) (0.08 * program -> scrHeight),
+			(int) (0.08 * program -> scrHeight),
+			FALSE
+		);
+		box = program -> boxTex;
+		if (program -> option_sound_fx)
+			box = program -> checkboxTex;
+		imageDraw (program, box,
+			+ (program -> scrWidth) * 0.135,
+			- (program -> scrHeight) * 0.405,
+			(int) (0.08 * program -> scrHeight),
+			(int) (0.08 * program -> scrHeight),
+			FALSE
+		);
+		box = program -> boxTex;
+		if (program -> option_music)
+			box = program -> checkboxTex;
+		imageDraw (program, box,
+			+ (program -> scrWidth) * 0.095,
+			- (program -> scrHeight) * 0.49,
+			(int) (0.08 * program -> scrHeight),
+			(int) (0.08 * program -> scrHeight),
+			FALSE
+		);
+
+		drawTextCentered (program, "sound fx", 950, 315, 1.6, textColor, 1.0);
+		drawTextCentered (program, "music", 950, 270, 1.6, textColor, 1.0);
+
+		switch (program -> optionsMenuOption) {
+			case FULLSCREEN:
+				imageDraw (program, program -> gliffTex,
+					- (program -> scrWidth) * 0.13,
+					- (program -> scrHeight) * 0.32,
+					(int) (0.08 * program -> scrHeight),
+					(int) (0.08 * program -> scrHeight),
+					FALSE
+				);
+				break;
+			case SOUND_FX:
+				imageDraw (program, program -> gliffTex,
+					- (program -> scrWidth) * 0.118,
+					- (program -> scrHeight) * 0.405,
+					(int) (0.08 * program -> scrHeight),
+					(int) (0.08 * program -> scrHeight),
+					FALSE
+				);
+				break;
+			case MUSIC:
+				imageDraw (program, program -> gliffTex,
+					- (program -> scrWidth) * 0.10,
+					- (program -> scrHeight) * 0.49,
+					(int) (0.08 * program -> scrHeight),
+					(int) (0.08 * program -> scrHeight),
+					FALSE
+				);
+				break;
+		}
+	}
+
 
 	if (program -> screen == LEVEL_SCREEN) {
 		draw_level (program, FOREST_1);

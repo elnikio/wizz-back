@@ -29,6 +29,7 @@ int main (void) {
 		glfwSwapBuffers (window);
 		glfwPollEvents ();
 		program -> time += 0.0001;
+		if (!(program -> running)) break;
 	}
 
 	glfwDestroyWindow (window);
