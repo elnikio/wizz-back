@@ -26,6 +26,8 @@
 typedef struct _Frame Frame;
 typedef struct _Program Program;
 typedef struct _Level Level;
+typedef struct _Sparcle Sparcle;
+typedef struct _TitleScreen TitleScreen;
 typedef struct _Cell Cell;
 typedef struct _Entity Entity;
 typedef struct _Move Move;
@@ -37,6 +39,13 @@ enum _keys {
 	KEY_DOWN = 264
 };
 
+enum _titleMenuOptions {
+	CONTINUE = 0,
+	NEW_GAME,
+	OPTIONS,
+	QUIT
+};
+
 enum _directions {
 	LEFT,
 	RIGHT,
@@ -45,6 +54,7 @@ enum _directions {
 };
 
 enum _chapters {
+	TITLE,
 	FOREST,
 	OCEAN
 };
@@ -124,7 +134,30 @@ struct _Level {
 	Entity* entities;
 };
 
+struct _Sparcle {
+	float posX;
+	float posY;
+	int life;
+	float velX;
+	float velY;
+	float velZ;
+	float height;
+	Sparcle* next;
+
+	char alive;	// When a sparcle runs out of life, this is toggled to FALSE. The next sparcle you create will replace this one.
+};
+
+struct _TitleScreen {
+	char option;
+};
+
 enum _colors {
+	TITLE_BG_R = 8,
+	TITLE_BG_G = 8,
+	TITLE_BG_B = 8,
+	TITLE_R = 255,
+	TITLE_G = 255,
+	TITLE_B = 255,
 	FOREST_BG_R = 0,
 	FOREST_BG_G = 8,
 	FOREST_BG_B = 0,
@@ -142,6 +175,12 @@ enum {
 	B = 2,
 	FALSE = 0,
 	TRUE = 1
+};
+
+enum _screens {
+	TITLE_SCREEN,
+	LEVEL_SCREEN
+
 };
 
 struct Character {
@@ -272,10 +311,14 @@ struct _Program {
 	int framesI;
 
 	// Game data:
+	char screen; // Are you in the menu? In a level? In settings?
 	char chapter;
+	TitleScreen* titleScreen;
+	char titleMenuOption;
 	Level* level;
 	int step;
 	Entity* player;
+	Sparcle* sparcles;
 	
 	// Generic textures:
 	char playerDir;
@@ -287,8 +330,11 @@ struct _Program {
 	GLuint crateTex;
 	GLuint appleTex;
 	GLuint timeStoneTex;
+	GLuint sparcleTex;
+	GLuint gliffTex;
 
 	// Forest textures:
+	GLuint titleTex1;
 	GLuint grassTex;
 	GLuint treeTex;
 	GLuint turtleUpTex;
@@ -316,6 +362,7 @@ void drawText (
 	vec3 color,
 	float alpha
 );
+void drawTextCentered (Program* program, char* text, float x, float y, float scale, vec3 color, float alpha);
 Frame* frameNew (
 	Program* program,
 	double x0, double x1,
@@ -340,3 +387,6 @@ char move_entity (Program* program, char X, char Y, char dir);
 Entity* entityNew (Program* program, int type);
 void step_level (Program* program);
 void step_turtles (Program* program);
+Sparcle* sparcle_new (Program* program);
+void draw_sparcles (Program* program);
+void step_sparcles (Program* program);

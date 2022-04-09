@@ -15,6 +15,14 @@ int main (void) {
 
 	load_level (program, FOREST_1);
 
+	/*
+	for (int i = 0; i < 100; i ++) {
+		//sparcle_new (program);
+	}
+	*/
+	
+	program -> titleTex1 = importTexture ("../sprites/hand.png");
+
 	while (!glfwWindowShouldClose (window)) {
 		//printf ("screen size = %d, %d\n", program -> scrWidth, program -> scrHeight);
 		display (program, glfwGetTime ());

@@ -184,6 +184,10 @@ void imageDraw (Program* program, GLuint texture, int x, int y, int width, int h
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 	glActiveTexture (GL_TEXTURE0);
 	glBindTexture (GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
 
 	glDrawArrays (GL_TRIANGLES, 0, 6);
 	}
@@ -205,7 +209,8 @@ void imageDraw (Program* program, GLuint texture, int x, int y, int width, int h
 
 	uniformI (program -> spriteShader, "chapter", FOREST);
 	uniformI (program -> spriteShader, "background", background);
-	uniformF (program -> spriteShader, "time", (const GLfloat) glfwGetTime ());
+	//uniformF (program -> spriteShader, "time", (const GLfloat) glfwGetTime ());
+	uniformF (program -> spriteShader, "time", program -> time);
 
 	glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);
 	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -218,6 +223,9 @@ void imageDraw (Program* program, GLuint texture, int x, int y, int width, int h
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
 	glActiveTexture (GL_TEXTURE0);
 	glBindTexture (GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
 
 	glDrawArrays (GL_TRIANGLES, 0, 6);
 
@@ -379,6 +387,55 @@ void drawText (Program* program, char* text, float x, float y, float scale, vec3
 	glActiveTexture (GL_TEXTURE0);
 	glBindVertexArray (program -> vao[0]);
 	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+
+	for (int i = 0; text[i] != '\0'; i ++) {
+
+		// draw shadow:
+		uniform3F (program -> fontShader, "textColor", 0.0, 0.0, 0.0);
+		struct Character ch = program -> Characters [text[i]].Character;
+
+		float xpos = x + ch.bearing[X] * scale;
+		float ypos = y - (ch.size[Y] - ch.bearing[Y]) * scale;
+		float w = ch.size[X] * scale;
+		float h = ch.size[Y] * scale;
+
+		uniformF (program -> fontShader, "xpos", (const GLfloat) xpos);
+		uniformF (program -> fontShader, "ypos", (const GLfloat) ypos);
+		uniformF (program -> fontShader, "w", (const GLfloat) w);
+		uniformF (program -> fontShader, "h", (const GLfloat) h);
+		uniformF (program -> fontShader, "alpha", (const GLfloat) alpha);
+
+		glBindTexture (GL_TEXTURE_2D, ch.textureID);
+		glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);
+		glDrawArrays (GL_TRIANGLES, 0, 6);
+		x += (ch.advance >> 6) * scale;
+		
+		// draw text:
+		uniform3F (program -> fontShader, "textColor", color[X], color[Y], color[Z]);
+		uniformF (program -> fontShader, "xpos", (const GLfloat) xpos + 1);
+		uniformF (program -> fontShader, "ypos", (const GLfloat) ypos + 1);
+
+
+		glDrawArrays (GL_TRIANGLES, 0, 6);
+
+	}
+}
+
+void drawTextCentered (Program* program, char* text, float x, float y, float scale, vec3 color, float alpha) {
+	glUseProgram (program -> fontShader);
+
+	glActiveTexture (GL_TEXTURE0);
+	glBindVertexArray (program -> vao[0]);
+	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+
+	float width = 0.0;
+
+	for (int i = 0; text[i] != '\0'; i ++) {
+		struct Character ch = program -> Characters [text[i]].Character;
+		width += ch.size[X] * scale;
+	}
+
+	x -= width / 2;
 
 	for (int i = 0; text[i] != '\0'; i ++) {
 

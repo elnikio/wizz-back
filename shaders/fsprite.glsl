@@ -31,11 +31,20 @@ uniform float time;
 
 
 #define FOREST 0
+#define TITLE 1
 
 void main (void) {
 	vec3 sprite_color = vec3 (1.0, 1.0, 1.0);
 	vec3 sprite_bg_color;
 	vec4 tex_color = texture(samp, texCoord);
+
+	if (chapter == TITLE) {
+		float r = sin(time * 100);
+		float g = sin(time * 1000);
+		float b = 1.0 - (r + g);
+		sprite_color = vec3 (r, g, b);
+		sprite_bg_color = vec3 (8.0 / 255, 8.0 / 255, 8.0 / 255);
+	}
 
 	if (chapter == FOREST) {
 		sprite_color = vec3 (float(FOREST_R) / 255, float(FOREST_G) / 255, float(FOREST_B) / 255);

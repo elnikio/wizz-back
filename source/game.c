@@ -39,6 +39,100 @@ void entity_reflect_direction (Entity* entity) {
 	}
 }
 
+Sparcle* sparcle_new (Program* program) {
+	Sparcle* this;
+	char found_corpse = FALSE;
+	if (program -> sparcles == NULL) {
+		this = malloc(sizeof(Sparcle));
+		program -> sparcles = this;
+	}
+	else {
+		this = program -> sparcles;
+		while (this -> next != NULL) {
+			if (this -> alive == FALSE) {
+				found_corpse = TRUE;
+				break;
+			}
+			this = this -> next;
+		}
+		if (!found_corpse) {
+			this -> next = malloc(sizeof(Sparcle));
+			this = this -> next;
+		}
+	}
+
+	this -> posX = 0.0;
+	this -> posY = 0.0;
+	this -> life = 200;
+	float rangeX = program -> scrWidth / 10.0;
+	float rangeY = program -> scrHeight / 10.0;
+	this -> velX = 0.0;
+	this -> velY = 0.0;
+	this -> velZ = 0.0;
+	while (this -> velX == 0.0)
+		this -> velX = ((float)rand()) / RAND_MAX * rangeX - rangeX/2;
+	while (this -> velY == 0.0)
+		this -> velY = ((float)rand()) / RAND_MAX * rangeY - rangeY/2;
+	while (this -> velZ == 0.0)
+		this -> velZ = ((float)rand()) / RAND_MAX * 128.0;
+	this -> height = 0.0;
+	if (!found_corpse)
+		this -> next = NULL;
+	this -> alive = TRUE;
+}
+
+void step_sparcles (Program* program) {
+	Sparcle* this = program -> sparcles;
+	//printf ("sparcles:\n");
+	while (this != NULL) {
+	
+		if (this -> alive) {
+			// Momentum:
+			this -> posX += this -> velX;
+			this -> posY += this -> velY;
+			this -> posY += this -> velZ;
+			this -> height += this -> velZ;
+			this -> velZ -= 0.98;
+			if (this -> height <= 0.0)
+				this -> velZ = - this -> velZ;
+
+			// Resistance:
+			this -> velX *= 0.95;
+			this -> velY *= 0.95;
+			this -> velZ *= 0.95;
+	
+			/*
+			if (this -> velZ < 2.0 && this -> velZ > -2.0 && this -> height < 10)
+				this -> alive = FALSE;
+				*/
+			if (this -> life == 0)
+				this -> alive = FALSE;
+
+
+			this -> life -= 1;
+			//printf ("life: %d\n", this -> life);
+	
+		}
+		this = this -> next;
+	}
+}
+
+void draw_sparcles (Program* program) {
+	Sparcle* this = program -> sparcles;
+	while (this != NULL) {
+		if (this -> alive) {
+			imageDraw (program, program -> sparcleTex,
+				this -> posX,
+				this -> posY,
+				(int) (0.02 * program -> scrHeight),
+				(int) (0.02 * program -> scrHeight),
+				FALSE
+			);
+		}
+		this = this -> next;
+	}
+}
+
 void step_turtles (Program* program) {
 	Entity* entity;
 	for (int i = 0; i < 15; i ++) {
@@ -79,6 +173,7 @@ void step_turtles (Program* program) {
 }
 
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (program -> screen == LEVEL_SCREEN) {
 	if (action > 0) {
 		switch (key) {
 			case KEY_RIGHT:
@@ -99,6 +194,19 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 				break;
 			default:
 				return;
+		}
+	}
+	}
+	else if (program -> screen == TITLE_SCREEN && action == 1) {
+		switch (key) {
+			case KEY_UP:
+				if (program -> titleMenuOption > 0)
+					program -> titleMenuOption --;
+				break;
+			case KEY_DOWN:
+				if (program -> titleMenuOption < 3)
+					program -> titleMenuOption ++;
+				break;
 		}
 	}
 	/*
@@ -510,7 +618,6 @@ void draw_level (Program* program, int level) {
 	}
 	for (int i = -7; i <= 7; i ++) {
 		for (int j = -7; j <= 7; j ++) {
-			//tileDraw (program, i, j, this -> cell [i + 7][j + 7].background_type, TRUE);
 			draw_cell (program, &(this -> cell [i + 7][j + 7]), i, j);
 		}
 	}

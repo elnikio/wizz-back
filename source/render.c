@@ -39,9 +39,12 @@ Program* renderInit (GLFWwindow* window) {
 	program -> frames = malloc(sizeof(Frame*) * 100);
 	program -> framesI = 0;
 	program -> time = 0.0;
-	program -> chapter = FOREST;
+	program -> chapter = TITLE;
 	program -> level = NULL;
 	program -> step = 0;
+	program -> screen = TITLE_SCREEN;
+	program -> sparcles = NULL;
+	program -> titleMenuOption = CONTINUE;
 
 	load_level (program, FOREST_1);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
@@ -69,6 +72,8 @@ Program* renderInit (GLFWwindow* window) {
 	program -> blockTex = importTexture ("../sprites/block.png");
 	program -> crateTex = importTexture ("../sprites/crate.png");
 	program -> timeStoneTex = importTexture ("../sprites/time_stone.png");
+	program -> sparcleTex = importTexture ("../sprites/sparcle.png");
+	program -> gliffTex = importTexture ("../sprites/gliff.png");
 	program -> playerDir = UP;
 
 	glEnable (GL_DEPTH_TEST);
@@ -90,6 +95,13 @@ void display (Program* program, double currentTime) {
 	
 	vec3 textColor = {1.0, 0.0, 0.0};
 	switch (program -> chapter) {
+		case TITLE:
+			glClearColor ((float)TITLE_BG_R / 255, (float)TITLE_BG_G / 255, (float)TITLE_BG_B / 255, 1.0);
+			textColor[X] = (float)TITLE_R / 255;
+			textColor[Y] = (float)TITLE_G / 255;
+			textColor[Z] = (float)TITLE_B / 255;
+			break;
+
 		case FOREST:
 			glClearColor ((float)FOREST_BG_R / 255, (float)FOREST_BG_G / 255, (float)FOREST_BG_B / 255, 1.0);
 			textColor[X] = (float)FOREST_R / 255;
@@ -97,10 +109,12 @@ void display (Program* program, double currentTime) {
 			textColor[Z] = (float)FOREST_B / 255;
 			break;
 	}
+	textColor[X] = sin(program -> time * 100);
+	textColor[Y] = sin(program -> time * 1000);
+	textColor[Z] = 1.0 - (textColor[X] + textColor[Y]);
+
 	glClear (GL_DEPTH_BUFFER_BIT);
 	glClear (GL_COLOR_BUFFER_BIT);
-
-	draw_level (program, FOREST_1);
 	
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
 
@@ -108,10 +122,73 @@ void display (Program* program, double currentTime) {
 	glDrawBuffer (GL_FRONT);
 	glEnable(GL_MULTISAMPLE);
 
-	drawText (program, "Chapter 1 - The Hut.", program -> scrWidth / 50, program -> scrHeight / 50, 1.6, textColor, 1.0);
-	char* step_str = malloc(32);
-	snprintf (step_str, 32, "Step: %d", program -> step);
-	drawText (program, step_str, program -> scrWidth / 50, program -> scrHeight * 49 / 50 - 16, 1.6, textColor, 1.0);
+	if (program -> screen == TITLE_SCREEN) {
+		imageDraw (program, program -> titleTex1,
+			0,
+			0,
+			512 * program -> scrHeight / 1080,
+			512 * program -> scrHeight / 1080,
+			FALSE
+		);
+		if ((int)(program -> time * 10000) % 1 == 0) {
+			sparcle_new (program);
+		}
+		draw_sparcles (program);
+		step_sparcles(program);
+		drawTextCentered (program, "MAGICAL HAND OF", 700, 720, 3.0, textColor, 1.0);
+		drawTextCentered (program, "MAGIC", 1270, 720, 6.0, textColor, 1.0);
+		
+		drawTextCentered (program, "continue", 950, 360, 1.6, textColor, 1.0);
+		drawTextCentered (program, "new game", 950, 315, 1.6, textColor, 1.0);
+		drawTextCentered (program, "options", 950, 270, 1.6, textColor, 1.0);
+		drawTextCentered (program, "quit", 950, 225, 1.6, textColor, 1.0);
+		switch (program -> titleMenuOption) {
+			case CONTINUE:
+				imageDraw (program, program -> gliffTex,
+					- (program -> scrWidth) * 0.12,
+					- (program -> scrHeight) * 0.32,
+					(int) (0.08 * program -> scrHeight),
+					(int) (0.08 * program -> scrHeight),
+					FALSE
+				);
+				break;
+			case NEW_GAME:
+				imageDraw (program, program -> gliffTex,
+					- (program -> scrWidth) * 0.135,
+					- (program -> scrHeight) * 0.405,
+					(int) (0.08 * program -> scrHeight),
+					(int) (0.08 * program -> scrHeight),
+					FALSE
+				);
+				break;
+			case OPTIONS:
+				imageDraw (program, program -> gliffTex,
+					- (program -> scrWidth) * 0.11,
+					- (program -> scrHeight) * 0.49,
+					(int) (0.08 * program -> scrHeight),
+					(int) (0.08 * program -> scrHeight),
+					FALSE
+				);
+				break;
+			case QUIT:
+				imageDraw (program, program -> gliffTex,
+					- (program -> scrWidth) * 0.08,
+					- (program -> scrHeight) * 0.575,
+					(int) (0.08 * program -> scrHeight),
+					(int) (0.08 * program -> scrHeight),
+					FALSE
+				);
+				break;
+		}
+	}
+
+	if (program -> screen == LEVEL_SCREEN) {
+		draw_level (program, FOREST_1);
+		drawText (program, "Chapter 1 - The Hut.", program -> scrWidth / 50, program -> scrHeight / 50, 1.6, textColor, 1.0);
+		char* step_str = malloc(32);
+		snprintf (step_str, 32, "Step: %d", program -> step);
+		drawText (program, step_str, program -> scrWidth / 50, program -> scrHeight * 49 / 50 - 16, 1.6, textColor, 1.0);
+	}
 	windowResized = FALSE;
 }
 
