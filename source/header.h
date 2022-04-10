@@ -77,15 +77,20 @@ enum _levels {
 enum _entities {
 	// Generic:
 	EMPTY,
-	PLAYER	= 0000000000000001,
-	BLOCK	= 0000000000000010,
-	CRATE	= 0000000000000100,
+	PLAYER		= 0000000000000001,
+	BLOCK		= 0000000000000010,
+	CRATE		= 0000000000000100,
+	CAULDRON	= 0000000010000000,
 
 	// Forest:
-	GRASS	= 0000000000001000,
-	TREE	= 0000000000010000,
-	TURTLE	= 0000000000100000,
-	APPLE	= 0000000001000000
+	GRASS		= 0000000000001000,
+	TREE		= 0000000000010000,
+	TURTLE		= 0000000000100000,
+	APPLE		= 0000000001000000,
+	BARK		= 0000000100000000,
+	CAR_LEFT	= 0000001000000000,
+	CAR_RIGHT	= 0000010000000000,
+	PLANKS		= 0000100000000000
 };
 
 enum _entity_ranks {
@@ -95,10 +100,13 @@ enum _entity_ranks {
 	CRATE_RANK = 8,
 	TURTLE_RANK = 5,
 	APPLE_RANK = 2,
+	CAULDRON_RANK = 20,
 
 	// Forest:
 	GRASS_RANK,
-	TREE_RANK
+	TREE_RANK = 50,
+	BARK_RANK = 50,
+	CAR_RANK = 50
 };
 
 enum _moveTypes {
@@ -134,8 +142,8 @@ struct _Entity {
 
 struct _Cell {
 	void* occupant;
-	int occupant_type;
-	int background_type;
+	long occupant_type;
+	long background_type;
 	Entity* entity;
 };
 
@@ -337,6 +345,7 @@ struct _Program {
 	Sparcle* sparcles;
 	char running;
 	Entity* pusher;
+	long ingredients;	// bit mask of entities, which have been placed in the cauldron as ingredients.
 	
 	// Generic textures:
 	char playerDir;
@@ -352,11 +361,17 @@ struct _Program {
 	GLuint gliffTex;
 	GLuint boxTex;
 	GLuint checkboxTex;
+	GLuint cauldronTex;
+	GLuint planksTex;
+	GLuint frameTex;
 
 	// Forest textures:
 	GLuint titleTex1;
 	GLuint grassTex;
 	GLuint treeTex;
+	GLuint barkTex;
+	GLuint carLeftTex;
+	GLuint carRightTex;
 	GLuint turtleUpTex;
 	GLuint turtleDownTex;
 	GLuint turtleLeftTex;
@@ -408,5 +423,6 @@ Entity* entityNew (Program* program, int type);
 void step_level (Program* program);
 void step_turtles (Program* program);
 Sparcle* sparcle_new (Program* program);
+Sparcle* sparcle_new_at (Program* program, float posX, float posY, float range, int life, float velZ);
 void draw_sparcles (Program* program);
 void step_sparcles (Program* program);

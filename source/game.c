@@ -39,6 +39,49 @@ void entity_reflect_direction (Entity* entity) {
 	}
 }
 
+Sparcle* sparcle_new_at (Program* program, float posX, float posY, float range, int life, float velZ) {
+	Sparcle* this;
+	char found_corpse = FALSE;
+	if (program -> sparcles == NULL) {
+		this = malloc(sizeof(Sparcle));
+		program -> sparcles = this;
+	}
+	else {
+		this = program -> sparcles;
+		while (this -> next != NULL) {
+			if (this -> alive == FALSE) {
+				found_corpse = TRUE;
+				break;
+			}
+			this = this -> next;
+		}
+		if (!found_corpse) {
+			this -> next = malloc(sizeof(Sparcle));
+			this = this -> next;
+		}
+	}
+
+	this -> posX = posX * program -> scrWidth;
+	this -> posY = posY * program -> scrHeight;
+	this -> life = life;
+	float rangeX = program -> scrWidth / 10.0 * range;
+	float rangeY = program -> scrHeight / 10.0 * range;
+	this -> velX = 0.0;
+	this -> velY = 0.0;
+	this -> velZ = 0.0;
+	while (this -> velX == 0.0)
+		this -> velX = ((float)rand()) / RAND_MAX * rangeX - rangeX/2;
+	while (this -> velY == 0.0)
+		this -> velY = ((float)rand()) / RAND_MAX * rangeY - rangeY/2;
+	while (this -> velZ == 0.0)
+		this -> velZ = ((float)rand()) / RAND_MAX * 128.0 * velZ;
+	this -> height = 0.0;
+	if (!found_corpse)
+		this -> next = NULL;
+	this -> alive = TRUE;
+}
+
+
 Sparcle* sparcle_new (Program* program) {
 	Sparcle* this;
 	char found_corpse = FALSE;
@@ -301,7 +344,15 @@ Entity* entityNew (Program* program, int type) {
 		case APPLE:
 			entity -> rank = APPLE_RANK;
 			break;
-
+		case CAULDRON:
+			entity -> rank = CAULDRON_RANK;
+			break;
+		case CAR_LEFT:
+			entity -> rank = CAR_RANK;
+			break;
+		case CAR_RIGHT:
+			entity -> rank = CAR_RANK;
+			break;
 	}
 	Level* level = program -> level;
 	if (level -> entities == NULL)
@@ -503,6 +554,14 @@ char move_entity (Program* program, char X, char Y, char dir) {
 	}
 	// There is something in the way:
 	else {
+		// Is an ingredient being pushed into cauldron?
+		if (level -> cell[X + dX][Y + dY].entity -> type == CAULDRON) switch (entity -> type) {
+			case APPLE:
+				level -> cell[X][Y].entity = NULL;
+				program -> ingredients += APPLE;
+				return 1;
+				break;
+		}
 		if (program -> pusher == NULL)
 			program -> pusher = entity;
 		// See if you can push it:
@@ -617,32 +676,62 @@ void load_level (Program* program, int level) {
 				for (int j = 0; j < 15; j ++) {
 					this -> cell [i][j].occupant_type = EMPTY;
 					this -> cell [i][j].background_type = GRASS;
+
+					if (i < 4 || i > 10) {
+						float dice = ((float)rand()) / RAND_MAX;
+						if (i > 10 && j >= 5 && j <= 7);
+						else {
+						if (dice < 0.9) {
+							this -> cell [i][j].occupant_type = TREE;
+							this -> cell [i][j].entity = entityNew (program, TREE);
+						}
+						else {
+							this -> cell [i][j].occupant_type = BARK;
+							this -> cell [i][j].entity = entityNew (program, BARK);
+						}
+						}
+					}
+					if (
+						((j == 12) && (i >= 5 && i <= 9)) ||
+						((j == 8) && (i >= 5 && i <= 9 && i != 6)) ||
+						((i == 5 || i == 9) && j < 12 && j > 8)
+					) {
+						this -> cell [i][j].occupant_type = BLOCK;
+						this -> cell [i][j].entity = entityNew (program, BLOCK);
+					}
+					if (i > 5 && i < 9 && j > 8 && j < 12)
+						this -> cell [i][j].background_type = PLANKS;
 				}
 			}
-			this -> cell [4][4].entity = entityNew (program, PLAYER);
-			program -> player = this -> cell [4][4].entity;
-			for (int i = 4; i < 10; i ++) {
-				if (i % 2 == 0) {
-					this -> cell [i][10].occupant_type = BLOCK;
-					this -> cell [i][10].entity = entityNew (program, BLOCK);
-				}
-				else {
-					this -> cell [i][10].occupant_type = CRATE;
-					this -> cell [i][10].entity = entityNew (program, CRATE);
-				}
-			}
+			this -> cell [7][4].entity = entityNew (program, PLAYER);
+			program -> player = this -> cell [7][4].entity;
+			// Turtle:
+			/*
 			this -> cell [2][2].occupant_type = TURTLE;
 			this -> cell [2][2].entity = entityNew (program, TURTLE);
 			this -> cell[2][2].entity -> direction = RIGHT;
-			this -> cell [11][9].occupant_type = APPLE;
-			this -> cell [11][9].entity = entityNew (program, APPLE);
+			*/
 			
+			// Apple:
+			this -> cell [10][9].occupant_type = APPLE;
+			this -> cell [10][9].entity = entityNew (program, APPLE);
+			
+			// Cauldron:
+			this -> cell [7][6].occupant_type = CAULDRON;
+			this -> cell [7][6].entity = entityNew (program, CAULDRON);
+
+			// Car:
+			this -> cell [11][6].occupant_type = CAR_LEFT;
+			this -> cell [11][6].entity = entityNew (program, CAR_LEFT);
+			this -> cell [12][6].occupant_type = CAR_RIGHT;
+			this -> cell [12][6].entity = entityNew (program, CAR_RIGHT);
+
 			break;
 	}
 }
 
 
-void tileDraw (Program* program, int x, int y, int tile_type, char background) {
+void tileDraw (Program* program, int x, int y, long tile_type, char background) {
 	float spriteWidth = 84.0 * (program -> scrWidth) / SCR_HEIGHT_DEFAULT;
 	float spriteHeight = 128.0 * (program -> scrHeight) / SCR_HEIGHT_DEFAULT;
 	spriteWidth = spriteHeight;
@@ -670,6 +759,9 @@ void tileDraw (Program* program, int x, int y, int tile_type, char background) {
 					break;
 			}
 			break;
+		case BARK:
+			tex = program -> barkTex;
+			break;
 		case TREE:
 			tex = program -> treeTex;
 			break;
@@ -682,8 +774,20 @@ void tileDraw (Program* program, int x, int y, int tile_type, char background) {
 		case TURTLE:
 			tex = program -> turtleUpTex;
 			break;
+		case PLANKS:
+			tex = program -> planksTex;
+			break;
 		case APPLE:
 			tex = program -> appleTex;
+			break;
+		case CAULDRON:
+			tex = program -> cauldronTex;
+			break;
+		case CAR_LEFT:
+			tex = program -> carLeftTex;
+			break;
+		case CAR_RIGHT:
+			tex = program -> carRightTex;
 			break;
 		default:
 			return;
@@ -728,10 +832,12 @@ void draw_level (Program* program, int level) {
 	Level* this = NULL;
 	switch (level) {
 		case FOREST_1:
-			drawTextCentered (program, "movement: arrow keys", 880, 360, 1.2, textColor, 1.0);
-			drawTextCentered (program, "wait: SPACE", 880, 320, 1.2, textColor, 1.0);
-			drawTextCentered (program, "restart: R", 880, 280, 1.2, textColor, 1.0);
-			drawTextCentered (program, "time moves when you move.", 880, 240, 1.2, textColor, 1.0);
+			drawTextCentered (program, "Movement: arrow keys", 936, 280, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Wait: SPACE", 936, 240, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Restart: R", 936, 200, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Time moves when you move.", 936, 160, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Some object are light enough to move.", 916, 120, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Cook a spell using apple.", 926, 80, 1.0, textColor, 1.0);
 			this = program -> level;
 			break;
 	}

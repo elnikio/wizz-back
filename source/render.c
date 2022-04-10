@@ -52,6 +52,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> option_music = FALSE;
 	program -> running = TRUE;
 	program -> pusher = NULL;
+	program -> ingredients = 0;
 
 	load_level (program, program -> level_id);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
@@ -66,7 +67,9 @@ Program* renderInit (GLFWwindow* window) {
 
 	// Import textures:
 	program -> grassTex = importTexture ("../sprites/grass.png");
-	program -> treeTex = importTexture ("../sprites/trunk.png");
+	program -> frameTex = importTexture ("../sprites/frame.png");
+	program -> treeTex = importTexture ("../sprites/tree.png");
+	program -> barkTex = importTexture ("../sprites/trunk.png");
 	program -> playerUpTex = importTexture ("../sprites/hand_up.png");
 	program -> playerDownTex = importTexture ("../sprites/hand_down.png");
 	program -> playerLeftTex = importTexture ("../sprites/hand_left.png");
@@ -83,6 +86,10 @@ Program* renderInit (GLFWwindow* window) {
 	program -> gliffTex = importTexture ("../sprites/gliff.png");
 	program -> boxTex = importTexture ("../sprites/box.png");
 	program -> checkboxTex = importTexture ("../sprites/check_box.png");
+	program -> cauldronTex = importTexture ("../sprites/cauldron.png");
+	program -> carLeftTex = importTexture ("../sprites/car_left.png");
+	program -> carRightTex = importTexture ("../sprites/car_right.png");
+	program -> planksTex = importTexture ("../sprites/planks.png");
 	program -> playerDir = UP;
 
 	glEnable (GL_DEPTH_TEST);
@@ -265,14 +272,44 @@ void display (Program* program, double currentTime) {
 		}
 	}
 
-
+	// Level Screen:
 	if (program -> screen == LEVEL_SCREEN) {
 		draw_level (program, FOREST_1);
-		drawText (program, "Chapter 1 - The Hut.", program -> scrWidth / 50, program -> scrHeight / 50, 1.6, textColor, 1.0);
+		drawText (program, "Forest - The Hut.", program -> scrWidth / 50, program -> scrHeight / 50, 1.6, textColor, 1.0);
 		char* step_str = malloc(32);
 		snprintf (step_str, 32, "Step: %d", program -> step);
 		drawText (program, step_str, program -> scrWidth / 50, program -> scrHeight * 49 / 50 - 16, 1.6, textColor, 1.0);
+
+		// Ingredients:
+		float spriteHeight = 128.0 * (program -> scrHeight) / SCR_HEIGHT_DEFAULT;
+		for (int i = 0; i < 12; i ++) {
+			imageDraw (program, program -> frameTex,
+				- (program -> scrWidth) * 0.95,
+				spriteHeight * (i - 6),
+				spriteHeight,
+				spriteHeight,
+				FALSE
+			);
+		}
+		if (program -> ingredients & APPLE) {
+			imageDraw (program, program -> appleTex,
+				- (program -> scrWidth) * 0.95,
+				spriteHeight * (0 - 6),
+				spriteHeight,
+				spriteHeight,
+				FALSE
+			);
+		}
 	}
+
+	if ((program -> ingredients == APPLE)) {
+		if ((int)(program -> time * 10000) % 1 == 0) {
+			sparcle_new_at (program, 0.0, -0.12, 0.1, 32, 0.1);
+		}
+		draw_sparcles (program);
+		step_sparcles(program);
+	}
+
 	windowResized = FALSE;
 }
 
