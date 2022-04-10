@@ -47,6 +47,7 @@ void main (void) {
 	}
 
 	if (chapter == FOREST) {
+		//sprite_color = vec3 (float(FOREST_R) / 255, float(FOREST_G) / 255 + sin(time * 400) / 32, float(FOREST_B) / 255);
 		sprite_color = vec3 (float(FOREST_R) / 255, float(FOREST_G) / 255, float(FOREST_B) / 255);
 		sprite_bg_color = vec3 (float(FOREST_BG_R) / 255, float(FOREST_BG_G) / 255, float(FOREST_BG_B) / 255);
 	}

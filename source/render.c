@@ -39,13 +39,15 @@ Program* renderInit (GLFWwindow* window) {
 	program -> frames = malloc(sizeof(Frame*) * 100);
 	program -> framesI = 0;
 	program -> time = 0.0;
+	//program -> chapter = TITLE;
 	program -> chapter = FOREST;
 	program -> level = NULL;
-	program -> level_id = FOREST_1;
+	program -> level_id = FOREST_2;
 	program -> step = 0;
 	program -> screen = LEVEL_SCREEN;
+	//program -> screen = TITLE_SCREEN;
 	program -> sparcles = NULL;
-	program -> titleMenuOption = CONTINUE;
+	program -> titleMenuOption = NEW_GAME;
 	program -> optionsMenuOption = FULLSCREEN;
 	program -> option_fullscreen = FALSE;
 	program -> option_sound_fx = FALSE;
@@ -53,6 +55,8 @@ Program* renderInit (GLFWwindow* window) {
 	program -> running = TRUE;
 	program -> pusher = NULL;
 	program -> ingredients = 0;
+	program -> mixed = FALSE;
+	program -> time_stone = FALSE;
 
 	load_level (program, program -> level_id);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
@@ -157,8 +161,7 @@ void display (Program* program, double currentTime) {
 
 	// Title Screen:
 	if (program -> screen == TITLE_SCREEN) {
-		
-		drawTextCentered (program, "continue", 950, 360, 1.6, textColor, 1.0);
+		//drawTextCentered (program, "continue", 950, 360, 1.6, textColor, 1.0);
 		drawTextCentered (program, "new game", 950, 315, 1.6, textColor, 1.0);
 		drawTextCentered (program, "options", 950, 270, 1.6, textColor, 1.0);
 		drawTextCentered (program, "quit", 950, 225, 1.6, textColor, 1.0);
@@ -303,6 +306,7 @@ void display (Program* program, double currentTime) {
 	}
 
 	if ((program -> ingredients == APPLE)) {
+		program -> mixed = TRUE;
 		if ((int)(program -> time * 10000) % 1 == 0) {
 			sparcle_new_at (program, 0.0, -0.12, 0.1, 32, 0.1);
 		}

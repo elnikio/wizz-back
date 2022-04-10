@@ -90,7 +90,8 @@ enum _entities {
 	BARK		= 0000000100000000,
 	CAR_LEFT	= 0000001000000000,
 	CAR_RIGHT	= 0000010000000000,
-	PLANKS		= 0000100000000000
+	PLANKS		= 0000100000000000,
+	TIME_STONE	= 0001000000000000
 };
 
 enum _entity_ranks {
@@ -98,6 +99,7 @@ enum _entity_ranks {
 	PLAYER_RANK = 10,
 	BLOCK_RANK = 20,
 	CRATE_RANK = 8,
+	TIME_STONE_RANK = 8,
 	TURTLE_RANK = 5,
 	APPLE_RANK = 2,
 	CAULDRON_RANK = 20,
@@ -110,6 +112,7 @@ enum _entity_ranks {
 };
 
 enum _moveTypes {
+	NONE,
 	STEP,
 	JUMP,
 	SPECIAL
@@ -124,7 +127,7 @@ struct _Move {
 };
 
 struct _Entity {
-	int type;
+	long type;
 
 	Move* moves;
 	int step;
@@ -150,6 +153,7 @@ struct _Cell {
 struct _Level {
 	Cell cell[15][15];
 	Entity* entities;
+	Entity* ghosts;		// Ghosts of entities record every entity with its every move until the moment you get the time stone.
 };
 
 struct _Sparcle {
@@ -346,6 +350,8 @@ struct _Program {
 	char running;
 	Entity* pusher;
 	long ingredients;	// bit mask of entities, which have been placed in the cauldron as ingredients.
+	char mixed;			// is there a complete potion in the cauldron?
+	char time_stone;	// does the player have the time stone?
 	
 	// Generic textures:
 	char playerDir;
@@ -419,7 +425,7 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 void load_level (Program* program, int level);
 void draw_level (Program* program, int level);
 char move_entity (Program* program, char X, char Y, char dir);
-Entity* entityNew (Program* program, int type);
+Entity* entityNew (Program* program, long type);
 void step_level (Program* program);
 void step_turtles (Program* program);
 Sparcle* sparcle_new (Program* program);

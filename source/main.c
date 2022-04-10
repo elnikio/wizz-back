@@ -13,14 +13,6 @@ int main (void) {
 
 	init (program);
 
-	load_level (program, FOREST_1);
-
-	/*
-	for (int i = 0; i < 100; i ++) {
-		//sparcle_new (program);
-	}
-	*/
-	
 	program -> titleTex1 = importTexture ("../sprites/hand.png");
 
 	while (!glfwWindowShouldClose (window)) {

@@ -254,7 +254,7 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 	else if (program -> screen == TITLE_SCREEN && action == 1) {
 		switch (key) {
 			case KEY_UP:
-				if (program -> titleMenuOption > 0)
+				if (program -> titleMenuOption > 1)
 					program -> titleMenuOption --;
 				break;
 			case KEY_DOWN:
@@ -262,6 +262,10 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 					program -> titleMenuOption ++;
 				break;
 			case KEY_ENTER:
+				if (program -> titleMenuOption == NEW_GAME) {
+					program -> screen = LEVEL_SCREEN;
+					program -> chapter = FOREST;
+				}
 				if (program -> titleMenuOption == OPTIONS)
 					program -> screen = OPTIONS_SCREEN;
 				if (program -> titleMenuOption == QUIT)
@@ -320,38 +324,65 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 	*/
 }
 
-Entity* entityNew (Program* program, int type) {
+Entity* entityNew (Program* program, long type) {
 	Entity* entity = malloc(sizeof(Entity));
+	Entity* ghost = malloc(sizeof(Entity));
 	entity -> type = type;
+	ghost -> type = type;
 	entity -> moves = NULL;
+	ghost -> moves = NULL;
 	entity -> interactions = 0;
+	ghost -> interactions = 0;
 	entity -> step = 0;
+	ghost -> step = 0;
 	entity -> direction = DOWN;
+	ghost -> direction = DOWN;
 	entity -> next = NULL;
+	ghost -> next = NULL;
 	switch (type) {
 		case PLAYER:
 			entity -> rank = PLAYER_RANK;
+			ghost -> rank = PLAYER_RANK;
 			break;
 		case BLOCK:
 			entity -> rank = BLOCK_RANK;
+			ghost -> rank = BLOCK_RANK;
+			break;
+		case TREE:
+			entity -> rank = TREE_RANK;
+			ghost -> rank = TREE_RANK;
+			break;
+		case BARK:
+			entity -> rank = BARK_RANK;
+			ghost -> rank = BARK_RANK;
 			break;
 		case CRATE:
 			entity -> rank = CRATE_RANK;
+			ghost -> rank = CRATE_RANK;
 			break;
 		case TURTLE:
 			entity -> rank = TURTLE_RANK;
+			ghost -> rank = TURTLE_RANK;
 			break;
 		case APPLE:
 			entity -> rank = APPLE_RANK;
+			ghost -> rank = APPLE_RANK;
 			break;
 		case CAULDRON:
 			entity -> rank = CAULDRON_RANK;
+			ghost -> rank = CAULDRON_RANK;
 			break;
 		case CAR_LEFT:
 			entity -> rank = CAR_RANK;
+			ghost -> rank = CAR_RANK;
 			break;
 		case CAR_RIGHT:
 			entity -> rank = CAR_RANK;
+			ghost -> rank = CAR_RANK;
+			break;
+		case TIME_STONE:
+			entity -> rank = TIME_STONE_RANK;
+			ghost -> rank = TIME_STONE_RANK;
 			break;
 	}
 	Level* level = program -> level;
@@ -364,6 +395,11 @@ Entity* entityNew (Program* program, int type) {
 		last -> next = entity;
 	}
 	return entity;
+}
+
+// This needs to be inmplemented some time before the singularity.
+Entity* entityFree (Program* program, long type) {
+	
 }
 
 // This is used to delete the first move in the queue after it's been processed.
@@ -554,14 +590,32 @@ char move_entity (Program* program, char X, char Y, char dir) {
 	}
 	// There is something in the way:
 	else {
-		// Is an ingredient being pushed into cauldron?
+		// Is an ingredient or hand being pushed into cauldron?
 		if (level -> cell[X + dX][Y + dY].entity -> type == CAULDRON) switch (entity -> type) {
 			case APPLE:
 				level -> cell[X][Y].entity = NULL;
 				program -> ingredients += APPLE;
 				return 1;
 				break;
+			case PLAYER:
+				if (program -> mixed) {
+					program -> screen = TITLE_SCREEN;
+					program -> chapter = TITLE;
+				}
+				break;
 		}
+
+		// Is hand taking an item?
+		if (level -> cell[X][Y].entity -> type = PLAYER) {
+			if (level -> cell[X + dX][Y + dY].entity -> type == TIME_STONE) {
+				level -> cell[X + dX][Y + dY].entity = entity;
+				level -> cell[X][Y].entity = NULL;
+				entity_pop_move (entity);
+				program -> time_stone = TRUE;
+				return 1;
+			}
+		}
+
 		if (program -> pusher == NULL)
 			program -> pusher = entity;
 		// See if you can push it:
@@ -662,6 +716,8 @@ void load_level (Program* program, int level) {
 	Level* this = malloc(sizeof(Level));
 	program -> level = this;
 	this -> entities = NULL;
+	program -> ingredients = 0;
+	program -> mixed = FALSE;
 
 	for (int i = 0; i < 15; i ++) {
 		for (int j = 0; j < 15; j ++) {
@@ -682,11 +738,9 @@ void load_level (Program* program, int level) {
 						if (i > 10 && j >= 5 && j <= 7);
 						else {
 						if (dice < 0.9) {
-							this -> cell [i][j].occupant_type = TREE;
 							this -> cell [i][j].entity = entityNew (program, TREE);
 						}
 						else {
-							this -> cell [i][j].occupant_type = BARK;
 							this -> cell [i][j].entity = entityNew (program, BARK);
 						}
 						}
@@ -696,13 +750,17 @@ void load_level (Program* program, int level) {
 						((j == 8) && (i >= 5 && i <= 9 && i != 6)) ||
 						((i == 5 || i == 9) && j < 12 && j > 8)
 					) {
-						this -> cell [i][j].occupant_type = BLOCK;
-						this -> cell [i][j].entity = entityNew (program, BLOCK);
+						if (!(i == 8 && j == 12))
+							this -> cell [i][j].entity = entityNew (program, BLOCK);
 					}
 					if (i > 5 && i < 9 && j > 8 && j < 12)
 						this -> cell [i][j].background_type = PLANKS;
 				}
 			}
+			this -> cell [8][12].entity = entityNew (program, CRATE);
+			this -> cell [4][9].entity = entityNew (program, BARK);
+
+
 			this -> cell [7][4].entity = entityNew (program, PLAYER);
 			program -> player = this -> cell [7][4].entity;
 			// Turtle:
@@ -727,6 +785,40 @@ void load_level (Program* program, int level) {
 			this -> cell [12][6].entity = entityNew (program, CAR_RIGHT);
 
 			break;
+
+		case FOREST_2:
+			for (int i = 0; i < 15; i ++) {
+				for (int j = 0; j < 15; j ++) {
+					this -> cell [i][j].occupant_type = EMPTY;
+					this -> cell [i][j].background_type = GRASS;
+
+					if (pow(i - 7, 2)+ pow(j - 7, 2) > 32) {
+						float dice = ((float)rand()) / RAND_MAX;
+						if (dice < 0.9) {
+							this -> cell [i][j].entity = entityNew (program, TREE);
+						}
+						else {
+							this -> cell [i][j].entity = entityNew (program, BARK);
+						}
+					}
+				}
+			}
+
+			this -> cell [7][4].entity = entityNew (program, PLAYER);
+			program -> player = this -> cell [7][4].entity;
+			
+			// Apple:
+			this -> cell [10][9].occupant_type = APPLE;
+			this -> cell [10][9].entity = entityNew (program, APPLE);
+			
+			// Cauldron:
+			this -> cell [7][6].occupant_type = CAULDRON;
+			this -> cell [7][6].entity = entityNew (program, CAULDRON);
+
+			this -> cell [7][11].entity = entityNew (program, TIME_STONE);
+
+			break;
+
 	}
 }
 
@@ -773,6 +865,9 @@ void tileDraw (Program* program, int x, int y, long tile_type, char background) 
 			break;
 		case TURTLE:
 			tex = program -> turtleUpTex;
+			break;
+		case TIME_STONE:
+			tex = program -> timeStoneTex;
 			break;
 		case PLANKS:
 			tex = program -> planksTex;
@@ -832,12 +927,13 @@ void draw_level (Program* program, int level) {
 	Level* this = NULL;
 	switch (level) {
 		case FOREST_1:
-			drawTextCentered (program, "Movement: arrow keys", 936, 280, 1.0, textColor, 1.0);
-			drawTextCentered (program, "Wait: SPACE", 936, 240, 1.0, textColor, 1.0);
-			drawTextCentered (program, "Restart: R", 936, 200, 1.0, textColor, 1.0);
-			drawTextCentered (program, "Time moves when you move.", 936, 160, 1.0, textColor, 1.0);
-			drawTextCentered (program, "Some object are light enough to move.", 916, 120, 1.0, textColor, 1.0);
-			drawTextCentered (program, "Cook a spell using apple.", 926, 80, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Movement: arrow keys", 936, 320, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Wait: SPACE", 936, 280, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Restart: R", 936, 240, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Time moves when you move.", 936, 200, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Some object are light enough to move.", 916, 160, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Cook a spell using apple.", 926, 120, 1.0, textColor, 1.0);
+			drawTextCentered (program, "Enter cauldron to consume spell.", 926, 80, 1.0, textColor, 1.0);
 			this = program -> level;
 			break;
 	}
