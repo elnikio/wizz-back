@@ -40,7 +40,8 @@ enum _keys {
 	KEY_ENTER = 257,
 	KEY_ESC = 256,
 	KEY_SPACE = 32,
-	KEY_R = 82
+	KEY_R = 82,
+	KEY_K = 75
 };
 
 enum _titleMenuOptions {
@@ -123,12 +124,21 @@ struct _Move {
 
 	// Step type:
 	char dir;
+
+	// Jump type:
+	int x;
+	int y;
+
 	Move* next;
 };
 
 struct _Entity {
+	int id;
 	long type;
 
+	// Movement:
+	int spawnX;
+	int spawnY;
 	Move* moves;
 	int step;
 	char direction;
@@ -352,6 +362,7 @@ struct _Program {
 	long ingredients;	// bit mask of entities, which have been placed in the cauldron as ingredients.
 	char mixed;			// is there a complete potion in the cauldron?
 	char time_stone;	// does the player have the time stone?
+	int entity_id_last;
 	
 	// Generic textures:
 	char playerDir;
@@ -425,7 +436,7 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 void load_level (Program* program, int level);
 void draw_level (Program* program, int level);
 char move_entity (Program* program, char X, char Y, char dir);
-Entity* entityNew (Program* program, long type);
+Entity* entityNew (Program* program, long type, int spawnX, int spawnY);
 void step_level (Program* program);
 void step_turtles (Program* program);
 Sparcle* sparcle_new (Program* program);

@@ -14,12 +14,92 @@ void clear_moves (Move* move) {
 
 void player_add_step (Program* program, char direction) {
 
+	// Clear backlog and add move:
 	Entity* player = program -> player;
 	clear_moves (player -> moves);
 	player -> moves = malloc(sizeof(Move));
 	player -> moves -> type = STEP;
 	player -> moves -> dir = direction;
 	player -> moves -> next = NULL;
+
+	// Append move to ghost:
+	Entity* ghost = program -> level -> ghosts;
+	while (ghost -> type != PLAYER) ghost = ghost -> next;
+	Move* move = malloc (sizeof(Move));
+	if (ghost -> moves == NULL)
+		ghost -> moves = move;
+	else {
+		Move* last = ghost -> moves;
+		while (last -> next != NULL)
+			last = last -> next;
+		last -> next = move;
+	}
+	ghost -> moves -> type = STEP;
+	ghost -> moves -> dir = direction;
+	ghost -> moves -> next = NULL;
+}
+
+void entity_add_step (Program* program, Entity* entity, char direction) {
+
+	// Add move to entity:
+	Move* move = malloc(sizeof(Move));
+	move -> type = STEP;
+	move -> dir = direction;
+	move -> next = NULL;
+
+	if (entity -> moves == NULL)
+		entity -> moves = move;
+	else {
+		Move* last = entity -> moves;
+		while (last -> next != NULL)
+			last = last -> next;
+		last -> next = move;
+	}
+	
+	// Add move to ghost:
+	Entity* ghost = program -> level -> ghosts;
+	while (ghost -> id != entity -> id) ghost = ghost -> next;
+
+	if (ghost -> moves == NULL)
+		ghost -> moves = move;
+	else {
+		Move* last = ghost -> moves;
+		while (last -> next != NULL)
+			last = last -> next;
+		last -> next = move;
+	}
+}
+
+void entity_add_jump (Program* program, Entity* entity, int x, int y) {
+
+	Move* move = malloc(sizeof(Move));
+	move -> type = JUMP;
+	move -> x = x;
+	move -> y = y;
+	move -> next = NULL;
+
+	// Add jump to entity:
+	if (entity -> moves == NULL)
+		entity -> moves = move;
+	else {
+		Move* last = entity -> moves;
+		while (last -> next != NULL)
+			last = last -> next;
+		last -> next = move;
+	}
+
+	// Add jump to ghost:
+	Entity* ghost = program -> level -> ghosts;
+	while (ghost -> id != entity -> id) ghost = ghost -> next;
+
+	if (ghost -> moves == NULL)
+		ghost -> moves = move;
+	else {
+		Move* last = ghost -> moves;
+		while (last -> next != NULL)
+			last = last -> next;
+		last -> next = move;
+	}
 }
 
 void entity_reflect_direction (Entity* entity) {
@@ -246,6 +326,9 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 			case KEY_R:
 				load_level (program, program -> level_id);
 				break;
+			case KEY_K:
+				entity_add_step (program, program -> player, DOWN);
+				break;
 			default:
 				return;
 		}
@@ -324,9 +407,12 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 	*/
 }
 
-Entity* entityNew (Program* program, long type) {
+Entity* entityNew (Program* program, long type, int spawnX, int spawnY) {
 	Entity* entity = malloc(sizeof(Entity));
 	Entity* ghost = malloc(sizeof(Entity));
+	entity -> id = program -> entity_id_last + 1;
+	ghost -> id = program -> entity_id_last + 1;
+	program -> entity_id_last ++;
 	entity -> type = type;
 	ghost -> type = type;
 	entity -> moves = NULL;
@@ -339,6 +425,10 @@ Entity* entityNew (Program* program, long type) {
 	ghost -> direction = DOWN;
 	entity -> next = NULL;
 	ghost -> next = NULL;
+	entity -> spawnX = spawnX;
+	entity -> spawnY = spawnY;
+	ghost -> spawnX = spawnX;
+	ghost -> spawnY = spawnY;
 	switch (type) {
 		case PLAYER:
 			entity -> rank = PLAYER_RANK;
@@ -394,6 +484,15 @@ Entity* entityNew (Program* program, long type) {
 			last = last -> next;
 		last -> next = entity;
 	}
+	if (level -> ghosts  == NULL)
+		level -> ghosts = ghost;
+	else {
+		Entity* last = level -> ghosts;
+		while (last -> next != NULL)
+			last = last -> next;
+		last -> next = ghost;
+	}
+
 	return entity;
 }
 
@@ -716,6 +815,7 @@ void load_level (Program* program, int level) {
 	Level* this = malloc(sizeof(Level));
 	program -> level = this;
 	this -> entities = NULL;
+	this -> ghosts = NULL;
 	program -> ingredients = 0;
 	program -> mixed = FALSE;
 
@@ -738,10 +838,10 @@ void load_level (Program* program, int level) {
 						if (i > 10 && j >= 5 && j <= 7);
 						else {
 						if (dice < 0.9) {
-							this -> cell [i][j].entity = entityNew (program, TREE);
+							this -> cell [i][j].entity = entityNew (program, TREE, i, j);
 						}
 						else {
-							this -> cell [i][j].entity = entityNew (program, BARK);
+							this -> cell [i][j].entity = entityNew (program, BARK, i, j);
 						}
 						}
 					}
@@ -751,38 +851,38 @@ void load_level (Program* program, int level) {
 						((i == 5 || i == 9) && j < 12 && j > 8)
 					) {
 						if (!(i == 8 && j == 12))
-							this -> cell [i][j].entity = entityNew (program, BLOCK);
+							this -> cell [i][j].entity = entityNew (program, BLOCK, i, j);
 					}
 					if (i > 5 && i < 9 && j > 8 && j < 12)
 						this -> cell [i][j].background_type = PLANKS;
 				}
 			}
-			this -> cell [8][12].entity = entityNew (program, CRATE);
-			this -> cell [4][9].entity = entityNew (program, BARK);
+			this -> cell [8][12].entity = entityNew (program, CRATE, 8, 12);
+			this -> cell [4][9].entity = entityNew (program, BARK, 4, 9);
 
 
-			this -> cell [7][4].entity = entityNew (program, PLAYER);
+			this -> cell [7][4].entity = entityNew (program, PLAYER, 7, 4);
 			program -> player = this -> cell [7][4].entity;
 			// Turtle:
 			/*
 			this -> cell [2][2].occupant_type = TURTLE;
-			this -> cell [2][2].entity = entityNew (program, TURTLE);
+			this -> cell [2][2].entity = entityNew (program, TURTLE, 2, 2);
 			this -> cell[2][2].entity -> direction = RIGHT;
 			*/
 			
 			// Apple:
 			this -> cell [10][9].occupant_type = APPLE;
-			this -> cell [10][9].entity = entityNew (program, APPLE);
+			this -> cell [10][9].entity = entityNew (program, APPLE, 10, 9);
 			
 			// Cauldron:
 			this -> cell [7][6].occupant_type = CAULDRON;
-			this -> cell [7][6].entity = entityNew (program, CAULDRON);
+			this -> cell [7][6].entity = entityNew (program, CAULDRON, 7, 6);
 
 			// Car:
 			this -> cell [11][6].occupant_type = CAR_LEFT;
-			this -> cell [11][6].entity = entityNew (program, CAR_LEFT);
+			this -> cell [11][6].entity = entityNew (program, CAR_LEFT, 11, 6);
 			this -> cell [12][6].occupant_type = CAR_RIGHT;
-			this -> cell [12][6].entity = entityNew (program, CAR_RIGHT);
+			this -> cell [12][6].entity = entityNew (program, CAR_RIGHT, 12, 6);
 
 			break;
 
@@ -795,27 +895,27 @@ void load_level (Program* program, int level) {
 					if (pow(i - 7, 2)+ pow(j - 7, 2) > 32) {
 						float dice = ((float)rand()) / RAND_MAX;
 						if (dice < 0.9) {
-							this -> cell [i][j].entity = entityNew (program, TREE);
+							this -> cell [i][j].entity = entityNew (program, TREE, i, j);
 						}
 						else {
-							this -> cell [i][j].entity = entityNew (program, BARK);
+							this -> cell [i][j].entity = entityNew (program, BARK, i, j);
 						}
 					}
 				}
 			}
 
-			this -> cell [7][4].entity = entityNew (program, PLAYER);
+			this -> cell [7][4].entity = entityNew (program, PLAYER, 7, 4);
 			program -> player = this -> cell [7][4].entity;
 			
 			// Apple:
 			this -> cell [10][9].occupant_type = APPLE;
-			this -> cell [10][9].entity = entityNew (program, APPLE);
+			this -> cell [10][9].entity = entityNew (program, APPLE, 10, 9);
 			
 			// Cauldron:
 			this -> cell [7][6].occupant_type = CAULDRON;
-			this -> cell [7][6].entity = entityNew (program, CAULDRON);
+			this -> cell [7][6].entity = entityNew (program, CAULDRON, 7, 6);
 
-			this -> cell [7][11].entity = entityNew (program, TIME_STONE);
+			this -> cell [7][11].entity = entityNew (program, TIME_STONE, 7, 11);
 
 			break;
 

@@ -57,6 +57,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> ingredients = 0;
 	program -> mixed = FALSE;
 	program -> time_stone = FALSE;
+	program -> entity_id_last = 0;
 
 	load_level (program, program -> level_id);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
