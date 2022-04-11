@@ -312,6 +312,7 @@ struct _Program {
 
 	// Meta-data:
 	double time;
+	double rewind_time;
 	
 	// Window system objects:
 	GLFWwindow* window;
@@ -356,12 +357,15 @@ struct _Program {
 	Level* level;
 	int step;
 	Entity* player;
+	Entity* player_ghost;
 	Sparcle* sparcles;
 	char running;
 	Entity* pusher;
 	long ingredients;	// bit mask of entities, which have been placed in the cauldron as ingredients.
 	char mixed;			// is there a complete potion in the cauldron?
 	char time_stone;	// does the player have the time stone?
+	char rewinded;		// has the player rewinded already?
+	//Recursive rewining may be possible eventually, but it would need a more robust move system.
 	int entity_id_last;
 	
 	// Generic textures:

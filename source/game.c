@@ -4,6 +4,34 @@ extern Program* program;
 // Level stepping:
 // Every entity in the scene points to a linked list, containing future steps of that entity. A step can contain a move in one of four directions, a teleportation to a specific location, or a call to a change of state function. On every global step, the next step of every entity is evaluated in some hierarchical order. The step is removed from the list and the the entity moves to the next step. If there is no next step in the entity, it keeps state.
 
+// This needs to be inmplemented some time before the singularity.
+void entityFree (Entity* entity) {
+	
+}
+
+// Rewind time to 0. This is called when you take the stone.
+void rewind_level (Program* program) {
+	program -> rewinded = TRUE;
+	printf ("REWINDING!\n");
+	Entity* entity = program -> level -> entities;
+	Entity* ghost = program -> level -> ghosts;
+	Entity* player_ghost;
+	while (entity != NULL) {
+		if (entity -> type != PLAYER) {
+			entityFree (entity);
+			entity = ghost;
+			entity -> step = program -> step;
+		}
+		else
+			player_ghost = ghost;
+		entity = entity -> next;
+		ghost = ghost -> next;
+	}
+	program -> level -> cell[program -> player -> spawnX][program -> player -> spawnY].entity = entityNew (program, PLAYER, program -> player -> spawnX, program -> player -> spawnY);
+	program -> level -> cell[program -> player -> spawnX][program -> player -> spawnY].entity -> moves = player_ghost -> moves;
+
+}
+
 void clear_moves (Move* move) {
 	if (move == NULL)
 		return;
@@ -23,20 +51,21 @@ void player_add_step (Program* program, char direction) {
 	player -> moves -> next = NULL;
 
 	// Append move to ghost:
-	Entity* ghost = program -> level -> ghosts;
-	while (ghost -> type != PLAYER) ghost = ghost -> next;
-	Move* move = malloc (sizeof(Move));
-	if (ghost -> moves == NULL)
-		ghost -> moves = move;
-	else {
-		Move* last = ghost -> moves;
-		while (last -> next != NULL)
-			last = last -> next;
-		last -> next = move;
+	if (!(program -> rewinded)) {
+		Entity* ghost = program -> player_ghost;
+		Move* move = malloc (sizeof(Move));
+		if (ghost -> moves == NULL)
+			ghost -> moves = move;
+		else {
+			Move* last = ghost -> moves;
+			while (last -> next != NULL)
+				last = last -> next;
+			last -> next = move;
+		}
+		move -> type = STEP;
+		move -> dir = direction;
+		move -> next = NULL;
 	}
-	ghost -> moves -> type = STEP;
-	ghost -> moves -> dir = direction;
-	ghost -> moves -> next = NULL;
 }
 
 void entity_add_step (Program* program, Entity* entity, char direction) {
@@ -58,6 +87,11 @@ void entity_add_step (Program* program, Entity* entity, char direction) {
 	
 	// Add move to ghost:
 	Entity* ghost = program -> level -> ghosts;
+	move = malloc (sizeof(Move));
+	move -> type = STEP;
+	move -> dir = direction;
+	move -> next = NULL;
+
 	while (ghost -> id != entity -> id) ghost = ghost -> next;
 
 	if (ghost -> moves == NULL)
@@ -433,6 +467,7 @@ Entity* entityNew (Program* program, long type, int spawnX, int spawnY) {
 		case PLAYER:
 			entity -> rank = PLAYER_RANK;
 			ghost -> rank = PLAYER_RANK;
+			program -> player_ghost = ghost;
 			break;
 		case BLOCK:
 			entity -> rank = BLOCK_RANK;
@@ -496,10 +531,6 @@ Entity* entityNew (Program* program, long type, int spawnX, int spawnY) {
 	return entity;
 }
 
-// This needs to be inmplemented some time before the singularity.
-Entity* entityFree (Program* program, long type) {
-	
-}
 
 // This is used to delete the first move in the queue after it's been processed.
 void entity_pop_move (Entity* entity) {
@@ -809,6 +840,11 @@ void step_level (Program* program) {
 		}
 	}
 	step_turtles (program);
+	//if (program -> time_stone == TRUE && program -> rewind_time >= 0.99) {
+	if (program -> time_stone == TRUE) {
+		rewind_level (program);
+		program -> time_stone = FALSE;
+	}
 }
 
 void load_level (Program* program, int level) {
@@ -818,6 +854,9 @@ void load_level (Program* program, int level) {
 	this -> ghosts = NULL;
 	program -> ingredients = 0;
 	program -> mixed = FALSE;
+	program -> step = 0;
+	program -> rewinded = FALSE;
+	program -> rewind_time = 0.0;
 
 	for (int i = 0; i < 15; i ++) {
 		for (int j = 0; j < 15; j ++) {
@@ -1027,6 +1066,7 @@ void draw_level (Program* program, int level) {
 	Level* this = NULL;
 	switch (level) {
 		case FOREST_1:
+			/*
 			drawTextCentered (program, "Movement: arrow keys", 936, 320, 1.0, textColor, 1.0);
 			drawTextCentered (program, "Wait: SPACE", 936, 280, 1.0, textColor, 1.0);
 			drawTextCentered (program, "Restart: R", 936, 240, 1.0, textColor, 1.0);
@@ -1034,6 +1074,7 @@ void draw_level (Program* program, int level) {
 			drawTextCentered (program, "Some object are light enough to move.", 916, 160, 1.0, textColor, 1.0);
 			drawTextCentered (program, "Cook a spell using apple.", 926, 120, 1.0, textColor, 1.0);
 			drawTextCentered (program, "Enter cauldron to consume spell.", 926, 80, 1.0, textColor, 1.0);
+			*/
 			this = program -> level;
 			break;
 	}

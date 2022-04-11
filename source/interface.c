@@ -211,6 +211,7 @@ void imageDraw (Program* program, GLuint texture, int x, int y, int width, int h
 	uniformI (program -> spriteShader, "background", background);
 	uniformF (program -> spriteShader, "realtime", (const GLfloat) glfwGetTime ());
 	uniformF (program -> spriteShader, "time", program -> time);
+	uniformF (program -> spriteShader, "rewind_time", program -> rewind_time);
 
 	glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);
 	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
