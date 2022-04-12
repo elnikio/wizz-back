@@ -335,8 +335,9 @@ void step_turtles (Program* program) {
 
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
 	printf ("KEYY = %d\n", key);
+	//if (program -> time_stone == TRUE && program -> rewind_time >= 0.99) {
 	if (program -> screen == LEVEL_SCREEN) {
-	if (action > 0) {
+	if (program -> rewind_time == 0.0) if (action > 0) {
 		switch (key) {
 			case KEY_RIGHT:
 				player_add_step (program, RIGHT);
@@ -840,11 +841,6 @@ void step_level (Program* program) {
 		}
 	}
 	step_turtles (program);
-	//if (program -> time_stone == TRUE && program -> rewind_time >= 0.99) {
-	if (program -> time_stone == TRUE) {
-		rewind_level (program);
-		program -> time_stone = FALSE;
-	}
 }
 
 void load_level (Program* program, int level) {

@@ -54,33 +54,26 @@ void main(void) {
 		texCoord = vec2(0,0);
 	}
 
-	//float factor = pow(gl_Position.x, 2) + pow(gl_Position.y / 2, 2);
 	float factor = sqrt(pow(gl_Position.x, 2) + pow(gl_Position.y / 2, 2));
 	float factorX = pow(gl_Position.x, 2);
 	float factorY = pow(gl_Position.y / 2, 2);
 	float e = 2.71828;
-/*
-	gl_Position.x = mix (gl_Position.x, gl_Position.x * factor, realtime / 10);
-	gl_Position.y = mix (gl_Position.y, gl_Position.y * factor, realtime / 10);
-*/
 
-	//gl_Position.x = mix (gl_Position.x, gl_Position.x / factor, pow(e, -pow((500*time - 3), 2)));
-	//gl_Position.y = mix (gl_Position.y, gl_Position.y / factor, pow(e, -pow((500*time - 3), 2)));
-	float rewind_x = gl_Position.x + sin(factor*32 - time * 1000) / 16;
-	float rewind_y = gl_Position.y + sin(factor*32 - time * 1000) / 16;
+/*
+	float rewind_x = gl_Position.x + sin(factor*32 - time * 10000) / 4;
+	float rewind_y = gl_Position.y + sin(factor*32 - time * 10000) / 4;	
+
+*/
+	float rewind_x = gl_Position.x + sin(factorX*128 - time * 2000) / 4;
+	float rewind_y = gl_Position.y + cos(factorY*128 - time * 2000) / 4;
+
+
 
 	gl_Position.x = mix (gl_Position.x, rewind_x, pow(e, -pow((rewind_time*6 - 3), 2)));
 	gl_Position.y = mix (gl_Position.y, rewind_y, pow(e, -pow((rewind_time*6 - 3), 2)));
 
 
-
-	/*
-	gl_Position.x = mix (gl_Position.x, pow(gl_Position.x, 2), realtime / 10);
-	gl_Position.y = mix (gl_Position.y, pow(gl_Position.y, 2), realtime / 10);
-	*/
-
 	if (background == 1)
 		gl_Position.z = 0.5;
-//	varyingColor = vec4(position,1.0) * 0.5 + vec4(0.5, 0.5, 0.5, 0.5);
 	varyingColor = vec4(1.0, 1.0, 1.0, 1.0);
 }

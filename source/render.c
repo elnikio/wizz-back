@@ -112,7 +112,7 @@ Program* renderInit (GLFWwindow* window) {
 void display (Program* program, double currentTime) {
 
 	//printf ("program -> time = %f\n", program -> time);
-	printf ("program -> rewind_time = %f\n", program -> rewind_time);
+	//printf ("program -> rewind_time = %f\n", program -> rewind_time);
 
 	program -> canvasY0 = 0;
 	program -> canvasY1 = program -> scrHeight;
@@ -284,13 +284,12 @@ void display (Program* program, double currentTime) {
 	// Level Screen:
 	if (program -> screen == LEVEL_SCREEN) {
 		draw_level (program, FOREST_1);
-		//drawText (program, "Forest - The Hut.", program -> scrWidth / 50, program -> scrHeight / 50, 1.6, textColor, 1.0);
+		drawText (program, "Forest - The Hut.", program -> scrWidth / 50, program -> scrHeight / 50, 1.6, textColor, 1.0);
 		char* step_str = malloc(32);
 		snprintf (step_str, 32, "Step: %d", program -> step);
-		//drawText (program, step_str, program -> scrWidth / 50, program -> scrHeight * 49 / 50 - 16, 1.6, textColor, 1.0);
+		drawText (program, step_str, program -> scrWidth / 50, program -> scrHeight * 49 / 50 - 16, 1.6, textColor, 1.0);
 
 		// Ingredients:
-		/*
 		float spriteHeight = 128.0 * (program -> scrHeight) / SCR_HEIGHT_DEFAULT;
 		for (int i = 0; i < 12; i ++) {
 			imageDraw (program, program -> frameTex,
@@ -310,7 +309,6 @@ void display (Program* program, double currentTime) {
 				FALSE
 			);
 		}
-		*/
 	}
 
 	if ((program -> ingredients == APPLE)) {
@@ -321,8 +319,14 @@ void display (Program* program, double currentTime) {
 		draw_sparcles (program);
 		step_sparcles(program);
 	}
-
-	if (program -> rewinded && program -> rewind_time < 1.0) {
+	
+	// Rewind shader:
+	if (program -> time_stone == TRUE && program -> rewind_time >= 0.99) {
+		rewind_level (program);
+		program -> time_stone = FALSE;
+		program -> rewind_time = 0.0;
+	}
+	if (program -> time_stone && program -> rewind_time < 1.0) {
 		program -> rewind_time += 0.01;
 	}
 

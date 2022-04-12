@@ -378,6 +378,7 @@ struct _Program {
 	GLuint crateTex;
 	GLuint appleTex;
 	GLuint timeStoneTex;
+	GLuint glyphGrassTex;
 	GLuint sparcleTex;
 	GLuint gliffTex;
 	GLuint boxTex;
@@ -447,3 +448,4 @@ Sparcle* sparcle_new (Program* program);
 Sparcle* sparcle_new_at (Program* program, float posX, float posY, float range, int life, float velZ);
 void draw_sparcles (Program* program);
 void step_sparcles (Program* program);
+void rewind_level (Program* program);
