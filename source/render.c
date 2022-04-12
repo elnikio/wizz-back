@@ -42,7 +42,7 @@ Program* renderInit (GLFWwindow* window) {
 	//program -> chapter = TITLE;
 	program -> chapter = FOREST;
 	program -> level = NULL;
-	program -> level_id = FOREST_2;
+	program -> level_id = FOREST_1;
 	program -> step = 0;
 	program -> screen = LEVEL_SCREEN;
 	//program -> screen = TITLE_SCREEN;
