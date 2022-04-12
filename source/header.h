@@ -41,7 +41,18 @@ enum _keys {
 	KEY_ESC = 256,
 	KEY_SPACE = 32,
 	KEY_R = 82,
-	KEY_K = 75
+	KEY_K = 75,
+	KEY_DEV = 96,
+	KEY_0 = 48,
+	KEY_1 = 49,
+	KEY_2 = 50,
+	KEY_3 = 51,
+	KEY_4 = 52,
+	KEY_5 = 53,
+	KEY_6 = 54,
+	KEY_7 = 55,
+	KEY_8 = 56,
+	KEY_9 = 57
 };
 
 enum _titleMenuOptions {
@@ -329,6 +340,7 @@ struct _Program {
 	GLuint bgShader;
 	GLuint arrowShader;
 	GLuint spriteShader;
+	GLuint editorShader;
 	GLuint shadowShader;
 	GLuint* vao;
 	GLuint* vbo;
@@ -343,6 +355,12 @@ struct _Program {
 	// Project system objects:
 	Frame** frames;
 	int framesI;
+
+	// Dev interfaces:
+	char dev_menu;
+	char dev_menu_selected;
+	char editor_menu_chapter;
+	char editor_menu_chapter_selected;
 
 	// Game data:
 	char screen; // Are you in the menu? In a level? In settings?
@@ -367,6 +385,9 @@ struct _Program {
 	char rewinded;		// has the player rewinded already?
 	//Recursive rewining may be possible eventually, but it would need a more robust move system.
 	int entity_id_last;
+	
+	// Editor textures:
+	GLuint selectorTex;
 	
 	// Generic textures:
 	char playerDir;
@@ -427,6 +448,7 @@ Frame* frameNew (
 );
 void frameDraw (Program* program, Frame* frame);
 void imageDraw (Program* program, GLuint texture, int x, int y, int width, int height, char background);
+void editorImageDraw (Program* program, GLuint texture, int x, int y, int width, int height);
 void bgDraw (Program* program);
 
 // @Utility functions:

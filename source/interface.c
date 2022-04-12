@@ -146,6 +146,56 @@ void frameDraw (Program* program, Frame* frame) {
 	}
 }
 
+void editorImageDraw (Program* program, GLuint texture, int x, int y, int width, int height) {
+	
+	float x0 = x - width / 2;
+	float x1 = x + width / 2;
+	float y0 = y - height / 2;
+	float y1 = y + height / 2;
+
+	float UIx0;
+	float UIx1;
+	float UIy0;
+	float UIy1;
+	
+	// Draw Object:
+	glUseProgram (program -> editorShader);
+	
+	UIx0 = (x0 / program -> scrWidth);
+	UIx1 = (x1 / program -> scrWidth);
+	UIy0 = (y0 / program -> scrHeight);
+	UIy1 = (y1 / program -> scrHeight);
+
+	uniformF (program -> editorShader, "x0", UIx0);
+	uniformF (program -> editorShader, "x1", UIx1);
+	uniformF (program -> editorShader, "y0", UIy0);
+	uniformF (program -> editorShader, "y1", UIy1);
+
+	uniformI (program -> editorShader, "chapter", program -> chapter);
+	uniformI (program -> editorShader, "background", FALSE);
+	uniformF (program -> editorShader, "realtime", (const GLfloat) glfwGetTime ());
+	uniformF (program -> editorShader, "time", program -> time);
+	uniformF (program -> editorShader, "rewind_time", program -> rewind_time);
+
+	glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);
+	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray (0);
+
+	glEnable (GL_DEPTH_TEST);
+	glDepthFunc (GL_LEQUAL);
+	glDisable (GL_CULL_FACE);
+	
+	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+	glActiveTexture (GL_TEXTURE0);
+	glBindTexture (GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
+	glDrawArrays (GL_TRIANGLES, 0, 6);
+}
+
+
 void imageDraw (Program* program, GLuint texture, int x, int y, int width, int height, char background) {
 	
 	float x0 = x - width / 2;
@@ -158,41 +208,6 @@ void imageDraw (Program* program, GLuint texture, int x, int y, int width, int h
 	float UIy0;
 	float UIy1;
 	
-	// Draw Shadow (currently turned off):
-	for (int i = 1; i < 1; i ++) {
-	if (background == FALSE) {
-	glUseProgram (program -> shadowShader);
-
-	UIx0 = ((x0 + i) / program -> scrWidth);
-	UIx1 = ((x1 + i) / program -> scrWidth);
-	UIy0 = ((y0 - i) / program -> scrHeight);
-	UIy1 = ((y1 - i) / program -> scrHeight);
-
-	uniformF (program -> shadowShader, "x0", UIx0);
-	uniformF (program -> shadowShader, "x1", UIx1);
-	uniformF (program -> shadowShader, "y0", UIy0);
-	uniformF (program -> shadowShader, "y1", UIy1);
-
-	uniformI (program -> shadowShader, "chapter", FOREST);
-	uniformI (program -> shadowShader, "background", background);
-	uniformF (program -> shadowShader, "time", (const GLfloat) glfwGetTime ());
-	
-	glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);
-	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray (0);
-
-	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
-	glActiveTexture (GL_TEXTURE0);
-	glBindTexture (GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-
-
-	glDrawArrays (GL_TRIANGLES, 0, 6);
-	}
-	}
-
 	// Draw Object:
 	glUseProgram (program -> spriteShader);
 

@@ -44,7 +44,6 @@ void rewind_level (Program* program) {
 			}
 		}
 	}
-
 }
 
 void clear_moves (Move* move) {
@@ -353,34 +352,103 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 	//if (program -> time_stone == TRUE && program -> rewind_time >= 0.99) {
 	if (program -> screen == LEVEL_SCREEN) {
 	if (program -> rewind_time == 0.0) if (action > 0) {
-		switch (key) {
-			case KEY_RIGHT:
-				player_add_step (program, RIGHT);
-				step_level (program);
-				break;
-			case KEY_LEFT:
-				player_add_step (program, LEFT);
-				step_level (program);
-				break;
-			case KEY_UP:
-				player_add_step (program, UP);
-				step_level (program);
-				break;
-			case KEY_DOWN:
-				player_add_step (program, DOWN);
-				step_level (program);
-				break;
-			case KEY_SPACE:
-				step_level (program);
-				break;
-			case KEY_R:
-				load_level (program, program -> level_id);
-				break;
-			case KEY_K:
-				entity_add_step (program, program -> player, DOWN);
-				break;
-			default:
-				return;
+
+		// Dev Menu Disabled:
+		if (!(program -> dev_menu)) {
+			switch (key) {
+				case KEY_RIGHT:
+					player_add_step (program, RIGHT);
+					step_level (program);
+					break;
+				case KEY_LEFT:
+					player_add_step (program, LEFT);
+					step_level (program);
+					break;
+				case KEY_UP:
+					player_add_step (program, UP);
+					step_level (program);
+					break;
+				case KEY_DOWN:
+					player_add_step (program, DOWN);
+					step_level (program);
+					break;
+				case KEY_SPACE:
+					step_level (program);
+					break;
+				case KEY_R:
+					load_level (program, program -> level_id);
+					break;
+				case KEY_K:
+					entity_add_step (program, program -> player, DOWN);
+					break;
+				case KEY_DEV:
+					program -> dev_menu = !(program -> dev_menu);
+					break;
+				default:
+					return;
+			}
+		}
+		// Dev Menu:
+		else if (!(program -> dev_menu_selected) && (program -> editor_menu_chapter == 0)) {
+			switch (key) {
+				case KEY_UP:
+					if (program -> dev_menu < 3)
+						program -> dev_menu ++;
+					break;
+				case KEY_DOWN:
+					if (program -> dev_menu > 1)
+						program -> dev_menu --;
+					break;
+				case KEY_SPACE:
+					program -> dev_menu_selected = program -> dev_menu;
+					if (program -> dev_menu_selected == 1) {
+						program -> editor_menu_chapter = 1;
+					}
+					break;
+				case KEY_DEV:
+					program -> dev_menu = !(program -> dev_menu);
+					break;
+				case KEY_ESC:
+					program -> dev_menu = 0;
+					break;
+				default:
+					return;
+			}
+		}
+		// Editor Chapter Menu:
+		else if ((program -> dev_menu_selected) && (program -> editor_menu_chapter != 0)) {
+			switch (key) {
+				case KEY_UP:
+					if (program -> editor_menu_chapter < 4)
+						program -> editor_menu_chapter ++;
+					break;
+				case KEY_DOWN:
+					if (program -> editor_menu_chapter > 1)
+						program -> editor_menu_chapter --;
+					break;
+				case KEY_SPACE:
+					program -> editor_menu_chapter_selected = program -> editor_menu_chapter;
+					/*
+					program -> dev_menu_selected = program -> dev_menu;
+					if (program -> dev_menu_selected == 1) {
+						program -> editor_menu_chapter = 1;
+					}
+					*/
+					break;
+				case KEY_ESC:
+					program -> editor_menu_chapter = 0;
+					program -> dev_menu_selected = 0;
+					break;
+				default:
+					return;
+			}
+		}
+		else {
+			switch (key) {
+				case KEY_ESC:
+					program -> dev_menu_selected = 0;
+					break;
+			}
 		}
 	}
 	}

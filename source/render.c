@@ -33,6 +33,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> bgShader = createShaderProgram ("../shaders/vbg.glsl", "../shaders/fbg.glsl");
 	program -> arrowShader = createShaderProgram ("../shaders/varrow.glsl", "../shaders/farrow.glsl");
 	program -> spriteShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fsprite.glsl");
+	program -> editorShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fimage.glsl");
 	program -> shadowShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fshadow.glsl");
 	program -> vao = vao;
 	program -> vbo = vbo;
@@ -60,6 +61,10 @@ Program* renderInit (GLFWwindow* window) {
 	program -> entity_id_last = 0;
 	program -> rewinded = FALSE;
 	program -> rewind_time = 0.0;
+	program -> dev_menu = FALSE;
+	program -> dev_menu_selected = FALSE;
+	program -> editor_menu_chapter = FALSE;
+	program -> editor_menu_chapter_selected = FALSE;
 
 	load_level (program, program -> level_id);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
@@ -73,6 +78,7 @@ Program* renderInit (GLFWwindow* window) {
 	uniform4FV (program -> frameShader, "sunDir", sunDir);
 
 	// Import textures:
+	program -> selectorTex = importTexture ("../sprites/selector.png");
 	program -> grassTex = importTexture ("../sprites/grass.png");
 	program -> glyphGrassTex = importTexture ("../sprites/glyph_grass.png");
 	program -> frameTex = importTexture ("../sprites/frame.png");
@@ -329,6 +335,81 @@ void display (Program* program, double currentTime) {
 	}
 	if (program -> time_stone && program -> rewind_time < 1.0) {
 		program -> rewind_time += 0.01;
+	}
+
+	// Editor:
+	float size = 128.0 * (program -> scrHeight) / SCR_HEIGHT_DEFAULT;
+	float white[3] = {1.0, 1.0, 1.0};
+	float gray[3] = {0.4, 0.4, 0.4};
+	float yellow[3] = {1.0, 1.0, 0.0};
+
+	editorImageDraw (program, program -> selectorTex, 4 * size, 4 * size, size, size);
+	if (program -> dev_menu > 0) {
+		drawText (program, "[1] edit level", 0, 0, 0.6, gray, 1.0);
+		drawText (program, "[2] reload level", 0, 0 + 12.0, 0.6, gray, 1.0);
+		drawText (program, "[3] save changes", 0, 0 + 24.0, 0.6, gray, 1.0);
+		switch (program -> dev_menu) {
+			case 1:
+				drawText (program, "[1] edit level", 0, 0, 0.6, white, 1.0);
+				break;
+			case 2:
+				drawText (program, "[2] reload level", 0, 0 + 12.0, 0.6, white, 1.0);
+				break;
+			case 3:
+				drawText (program, "[3] save changes", 0, 0 + 24.0, 0.6, white, 1.0);
+				break;
+		}
+		switch (program -> dev_menu_selected) {
+			case 1:
+				drawText (program, "[1] edit level", 0, 0, 0.6, yellow, 1.0);
+				break;
+			case 2:
+				drawText (program, "[2] reload level", 0, 0 + 12.0, 0.6, yellow, 1.0);
+				break;
+			case 3:
+				drawText (program, "[3] save changes", 0, 0 + 24.0, 0.6, yellow, 1.0);
+				break;
+		}
+	}
+	if (program -> dev_menu_selected == 1) {
+		drawText (program, "[1] generic", 160.0, 0 + 0.0, 0.6, gray, 1.0);
+		drawText (program, "[2] woods", 160.0, 0 + 12.0, 0.6, gray, 1.0);
+		drawText (program, "[3] desert", 160.0, 0 + 24.0, 0.6, gray, 1.0);
+		drawText (program, "[4] ocean", 160.0, 0 + 36.0, 0.6, gray, 1.0);
+		switch (program -> editor_menu_chapter) {
+			case 1:
+				drawText (program, "[1] generic", 160.0, 0 + 0.0, 0.6, white, 1.0);
+				break;
+			case 2:
+				drawText (program, "[2] woods", 160.0, 0 + 12.0, 0.6, white, 1.0);
+				break;
+			case 3:
+				drawText (program, "[3] desert", 160.0, 0 + 24.0, 0.6, white, 1.0);
+				break;
+			case 4:
+				drawText (program, "[4] ocean", 160.0, 0 + 36.0, 0.6, white, 1.0);
+				break;
+		}
+		switch (program -> editor_menu_chapter_selected) {
+			case 1:
+				drawText (program, "[1] generic", 160.0, 0 + 0.0, 0.6, yellow, 1.0);
+				break;
+			case 2:
+				drawText (program, "[2] woods", 160.0, 0 + 12.0, 0.6, yellow, 1.0);
+				break;
+			case 3:
+				drawText (program, "[3] desert", 160.0, 0 + 24.0, 0.6, yellow, 1.0);
+				break;
+			case 4:
+				drawText (program, "[4] ocean", 160.0, 0 + 36.0, 0.6, yellow, 1.0);
+				break;
+		}
+		if (program -> editor_menu_chapter_selected == 1) {
+			drawText (program, "[1] player", 320.0, 0 + 0.0, 0.6, gray, 1.0);
+			drawText (program, "[2] block", 320.0, 0 + 12.0, 0.6, gray, 1.0);
+			drawText (program, "[3] crate", 320.0, 0 + 24.0, 0.6, gray, 1.0);
+			drawText (program, "[4] cauldron", 320.0, 0 + 36.0, 0.6, gray, 1.0);
+		}
 	}
 
 	windowResized = FALSE;
