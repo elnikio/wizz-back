@@ -74,6 +74,7 @@ Program* renderInit (GLFWwindow* window) {
 
 	// Import textures:
 	program -> grassTex = importTexture ("../sprites/grass.png");
+	program -> glyphGrassTex = importTexture ("../sprites/glyph_grass.png");
 	program -> frameTex = importTexture ("../sprites/frame.png");
 	program -> treeTex = importTexture ("../sprites/tree.png");
 	program -> barkTex = importTexture ("../sprites/trunk.png");

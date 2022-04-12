@@ -16,6 +16,8 @@ void rewind_level (Program* program) {
 	Entity* entity = program -> level -> entities;
 	Entity* ghost = program -> level -> ghosts;
 	Entity* player_ghost;
+
+	// Replace every entity with its ghost:
 	while (entity != NULL) {
 		if (entity -> type != PLAYER) {
 			entityFree (entity);
@@ -29,6 +31,19 @@ void rewind_level (Program* program) {
 	}
 	program -> level -> cell[program -> player -> spawnX][program -> player -> spawnY].entity = entityNew (program, PLAYER, program -> player -> spawnX, program -> player -> spawnY);
 	program -> level -> cell[program -> player -> spawnX][program -> player -> spawnY].entity -> moves = player_ghost -> moves;
+
+	// Move every entity other than the player to its' spawn location:
+	for (int i = 0; i < 15; i ++) {
+		for (int j = 0; j < 15; j ++) {
+			entity = program -> level -> cell [i][j].entity;
+			if (entity != NULL) if (entity -> id != program -> player -> id) {
+				if (entity -> spawnX != i || entity -> spawnY != j) {
+					program -> level -> cell [entity -> spawnX][entity -> spawnY].entity = entity;
+					program -> level -> cell [i][j].entity = NULL;
+				}
+			}
+		}
+	}
 
 }
 
