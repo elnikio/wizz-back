@@ -323,6 +323,7 @@ struct _Program {
 
 	// Meta-data:
 	double time;
+	double anim_time;
 	double rewind_time;
 	
 	// Window system objects:
@@ -340,6 +341,7 @@ struct _Program {
 	GLuint bgShader;
 	GLuint arrowShader;
 	GLuint spriteShader;
+	GLuint maskShader;
 	GLuint editorShader;
 	GLuint shadowShader;
 	GLuint* vao;
@@ -388,7 +390,7 @@ struct _Program {
 	
 	// Editor textures:
 	GLuint selectorTex;
-	
+
 	// Generic textures:
 	char playerDir;
 	GLuint playerUpTex;
@@ -448,6 +450,12 @@ Frame* frameNew (
 );
 void frameDraw (Program* program, Frame* frame);
 void imageDraw (Program* program, GLuint texture, int x, int y, int width, int height, char background);
+void maskedImageDraw (Program* program,
+		GLuint textureMask,
+		GLuint textureR,
+		GLuint textureG,
+		GLuint textureB,
+		int x, int y, int width, int height, char background);
 void editorImageDraw (Program* program, GLuint texture, int x, int y, int width, int height);
 void bgDraw (Program* program);
 

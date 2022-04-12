@@ -21,6 +21,10 @@ int main (void) {
 		glfwSwapBuffers (window);
 		glfwPollEvents ();
 		program -> time += 0.0001;
+		program -> anim_time += 0.002;
+		//printf ("anim_time = %f\n", program -> anim_time);
+		if (program -> anim_time > 1.0)
+			program -> anim_time = 0.0;
 		if (!(program -> running)) break;
 	}
 

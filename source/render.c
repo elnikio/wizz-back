@@ -33,6 +33,7 @@ Program* renderInit (GLFWwindow* window) {
 	program -> bgShader = createShaderProgram ("../shaders/vbg.glsl", "../shaders/fbg.glsl");
 	program -> arrowShader = createShaderProgram ("../shaders/varrow.glsl", "../shaders/farrow.glsl");
 	program -> spriteShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fsprite.glsl");
+	program -> maskShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fmask.glsl");
 	program -> editorShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fimage.glsl");
 	program -> shadowShader = createShaderProgram ("../shaders/vsprite.glsl", "../shaders/fshadow.glsl");
 	program -> vao = vao;
@@ -40,10 +41,11 @@ Program* renderInit (GLFWwindow* window) {
 	program -> frames = malloc(sizeof(Frame*) * 100);
 	program -> framesI = 0;
 	program -> time = 0.0;
+	program -> anim_time = 0.0;
 	//program -> chapter = TITLE;
 	program -> chapter = FOREST;
 	program -> level = NULL;
-	program -> level_id = FOREST_1;
+	program -> level_id = FOREST_2;
 	program -> step = 0;
 	program -> screen = LEVEL_SCREEN;
 	//program -> screen = TITLE_SCREEN;

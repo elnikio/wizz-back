@@ -1,7 +1,10 @@
 #version 430
 
 out vec4 color;
-layout (binding = 0) uniform sampler2D samp;
+layout (binding = 0) uniform sampler2D sampMask;
+layout (binding = 1) uniform sampler2D sampR;
+layout (binding = 2) uniform sampler2D sampG;
+layout (binding = 3) uniform sampler2D sampB;
 
 uniform float x0win;
 uniform float x1win;
@@ -20,9 +23,9 @@ uniform float outlineB;
 
 in vec4 varyingColor;
 in vec2 texCoord;
-in vec3 pos;
-uniform float realtime;
 uniform float time;
+uniform float realtime;
+uniform float animtime;
 
 #define FOREST_R 0
 #define FOREST_G 100
@@ -38,8 +41,20 @@ uniform float time;
 void main (void) {
 	vec3 sprite_color = vec3 (1.0, 1.0, 1.0);
 	vec3 sprite_bg_color;
-	vec4 tex_color = texture(samp, texCoord);
+	vec4 colorMask = texture(sampMask, texCoord);
 
+	vec2 coord;
+	//coord.x = texCoord.x + sin(realtime);
+	//coord.y = texCoord.y + sin(realtime);
+	coord.x = texCoord.x + sin(realtime) / 16;
+	coord.y = texCoord.y + sin(realtime * 4) / 24;
+
+
+	vec4 colorR = texture(sampR, coord);
+	vec4 colorG = texture(sampG, coord);
+	vec4 colorB = texture(sampB, coord);
+
+	/*
 	if (chapter == TITLE) {
 		float r = sin(time * 100);
 		float g = sin(time * 1000);
@@ -60,16 +75,28 @@ void main (void) {
 		sprite_color.z * (tex_color.z) + sprite_bg_color.z * (1 - tex_color.z),
 		tex_color.w
 	);
+	*/
 
+	/*
 	if (background == 1)
 		color.w /= 2;
-	/*
-	color = vec4 (
-		tex_color.xyz,
-		tex_color.w
-	);
 	*/
-//	color.g += pos.x / 2;
-	//color.g += 0.1;
-	//color.g -= (sin(time * 100 + pos.x * 10) + 1) / 10;
+	
+	color = vec4 (
+		colorMask.xyz,
+		colorMask.w
+	);
+
+	if (colorMask.r > 0)
+		color = colorR;
+	if (colorMask.g > 0)
+		color = colorG;
+	if (colorMask.b > 0)
+		color = colorB;
+	if (colorMask.rgb == vec3(1.0, 1.0, 1.0)) {
+		color = colorR / 4;
+	}
+	color.w = colorMask.w;
+
+	color.g *= 1.5;
 }

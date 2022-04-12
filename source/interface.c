@@ -195,6 +195,83 @@ void editorImageDraw (Program* program, GLuint texture, int x, int y, int width,
 	glDrawArrays (GL_TRIANGLES, 0, 6);
 }
 
+void maskedImageDraw (Program* program,
+		GLuint textureMask,
+		GLuint textureR,
+		GLuint textureG,
+		GLuint textureB,
+		int x, int y, int width, int height, char background) {
+	
+	float x0 = x - width / 2;
+	float x1 = x + width / 2;
+	float y0 = y - height / 2;
+	float y1 = y + height / 2;
+
+	float UIx0;
+	float UIx1;
+	float UIy0;
+	float UIy1;
+	
+	// Draw Object:
+	glUseProgram (program -> maskShader);
+	
+	UIx0 = (x0 / program -> scrWidth);
+	UIx1 = (x1 / program -> scrWidth);
+	UIy0 = (y0 / program -> scrHeight);
+	UIy1 = (y1 / program -> scrHeight);
+
+	uniformF (program -> maskShader, "x0", UIx0);
+	uniformF (program -> maskShader, "x1", UIx1);
+	uniformF (program -> maskShader, "y0", UIy0);
+	uniformF (program -> maskShader, "y1", UIy1);
+
+	uniformI (program -> maskShader, "chapter", program -> chapter);
+	uniformI (program -> maskShader, "background", background);
+	uniformF (program -> maskShader, "realtime", (const GLfloat) glfwGetTime ());
+	uniformF (program -> maskShader, "time", program -> time);
+	uniformF (program -> maskShader, "animtime", program -> anim_time);
+	uniformF (program -> maskShader, "rewind_time", program -> rewind_time);
+
+	glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);
+	glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray (0);
+
+	glEnable (GL_DEPTH_TEST);
+	glDepthFunc (GL_LEQUAL);
+	glDisable (GL_CULL_FACE);
+	
+	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
+	glActiveTexture (GL_TEXTURE0);
+	glBindTexture (GL_TEXTURE_2D, textureMask);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glActiveTexture (GL_TEXTURE1);
+	glBindTexture (GL_TEXTURE_2D, textureR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glActiveTexture (GL_TEXTURE2);
+	glBindTexture (GL_TEXTURE_2D, textureG);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glActiveTexture (GL_TEXTURE3);
+	glBindTexture (GL_TEXTURE_2D, textureB);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glDrawArrays (GL_TRIANGLES, 0, 6);
+}
+
 
 void imageDraw (Program* program, GLuint texture, int x, int y, int width, int height, char background) {
 	
@@ -226,6 +303,7 @@ void imageDraw (Program* program, GLuint texture, int x, int y, int width, int h
 	uniformI (program -> spriteShader, "background", background);
 	uniformF (program -> spriteShader, "realtime", (const GLfloat) glfwGetTime ());
 	uniformF (program -> spriteShader, "time", program -> time);
+	uniformF (program -> spriteShader, "animtime", program -> anim_time);
 	uniformF (program -> spriteShader, "rewind_time", program -> rewind_time);
 
 	glBindBuffer (GL_ARRAY_BUFFER, program -> vbo[0]);

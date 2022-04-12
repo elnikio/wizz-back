@@ -1046,7 +1046,7 @@ void tileDraw (Program* program, int x, int y, long tile_type, char background) 
 	float spriteHeight = 128.0 * (program -> scrHeight) / SCR_HEIGHT_DEFAULT;
 	spriteWidth = spriteHeight;
 
-	GLuint tex = 0;
+		GLuint tex = 0;
 	switch (tile_type) {
 		case EMPTY:
 			return;
