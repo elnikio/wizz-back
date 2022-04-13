@@ -67,6 +67,9 @@ Program* renderInit (GLFWwindow* window) {
 	program -> dev_menu_selected = FALSE;
 	program -> editor_menu_chapter = FALSE;
 	program -> editor_menu_chapter_selected = FALSE;
+	program -> input_buffer = malloc(64);
+	program -> input_buffer[0] = '\0';
+	program -> input_buffer_i = 0;
 
 	load_level (program, program -> level_id);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
@@ -350,6 +353,7 @@ void display (Program* program, double currentTime) {
 		drawText (program, "[1] edit level", 0, 0, 0.6, gray, 1.0);
 		drawText (program, "[2] reload level", 0, 0 + 12.0, 0.6, gray, 1.0);
 		drawText (program, "[3] save changes", 0, 0 + 24.0, 0.6, gray, 1.0);
+		drawText (program, "[4] save as", 0, 0 + 36.0, 0.6, gray, 1.0);
 		switch (program -> dev_menu) {
 			case 1:
 				drawText (program, "[1] edit level", 0, 0, 0.6, white, 1.0);
@@ -359,6 +363,9 @@ void display (Program* program, double currentTime) {
 				break;
 			case 3:
 				drawText (program, "[3] save changes", 0, 0 + 24.0, 0.6, white, 1.0);
+				break;
+			case 4:
+				drawText (program, "[4] save as", 0, 0 + 36.0, 0.6, white, 1.0);
 				break;
 		}
 		switch (program -> dev_menu_selected) {
@@ -370,6 +377,9 @@ void display (Program* program, double currentTime) {
 				break;
 			case 3:
 				drawText (program, "[3] save changes", 0, 0 + 24.0, 0.6, yellow, 1.0);
+				break;
+			case 4:
+				drawText (program, "[4] save as", 0, 0 + 36.0, 0.6, yellow, 1.0);
 				break;
 		}
 	}
@@ -412,6 +422,10 @@ void display (Program* program, double currentTime) {
 			drawText (program, "[3] crate", 320.0, 0 + 24.0, 0.6, gray, 1.0);
 			drawText (program, "[4] cauldron", 320.0, 0 + 36.0, 0.6, gray, 1.0);
 		}
+	}
+	if (program -> dev_menu_selected == 4) {
+		drawTextCentered (program, "[input]", program -> scrWidth / 2, program -> scrHeight / 2, 0.6, white, 1.0);
+		drawTextCentered (program, program -> input_buffer, program -> scrWidth / 2, program -> scrHeight / 2 - 12.0, 0.6, yellow, 1.0);
 	}
 
 	windowResized = FALSE;

@@ -40,6 +40,7 @@ enum _keys {
 	KEY_ENTER = 257,
 	KEY_ESC = 256,
 	KEY_SPACE = 32,
+	KEY_DELETE = 259,
 	KEY_R = 82,
 	KEY_K = 75,
 	KEY_DEV = 96,
@@ -172,6 +173,8 @@ struct _Cell {
 };
 
 struct _Level {
+	int id;
+	char* name;
 	Cell cell[15][15];
 	Entity* entities;
 	Entity* ghosts;		// Ghosts of entities record every entity with its every move until the moment you get the time stone.
@@ -363,6 +366,8 @@ struct _Program {
 	char dev_menu_selected;
 	char editor_menu_chapter;
 	char editor_menu_chapter_selected;
+	char* input_buffer;
+	int input_buffer_i;
 
 	// Game data:
 	char screen; // Are you in the menu? In a level? In settings?

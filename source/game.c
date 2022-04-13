@@ -347,14 +347,71 @@ void step_turtles (Program* program) {
 	}
 }
 
+void save_level (Program* program, char* name) {
+	char* dir = malloc(64);
+	snprintf (dir, 64, "%s", name);
+	FILE *fp = fopen (name, "w+");
+
+	Level* level = program -> level;
+	Entity* entity = level -> entities;
+	Entity* ghost = level -> ghosts;
+
+	// Meta-data:
+	fprintf (fp, "id: %d\n", level -> id);
+	fprintf (fp, "name: %s\n", level -> name);
+
+	// Cells:
+	fprintf (fp, "cells:\n");
+	for (int i = 0; i < 15; i ++) {
+		for (int j = 0; j < 15; j ++) {
+			if (level -> cell[i][j].entity != NULL)
+				fprintf (fp, " entity id: %d\n", level -> cell[i][j].entity -> id);
+			else
+				fprintf (fp, " entity id: NULL\n");
+		}
+	}
+
+	// Entities:
+	fprintf (fp, "entities:\n");
+	while (entity != NULL) {
+
+		// Meta-data:
+		fprintf (fp, " id: %d\n", entity -> id);
+		fprintf (fp, " type: %d\n", entity -> type);
+		fprintf (fp, " spawnX: %d\n", entity -> spawnX);
+		fprintf (fp, " spawnY: %d\n", entity -> spawnY);
+
+		Move* move = entity -> moves;
+		fprintf (fp, " entities:\n");
+		while (move != NULL) {
+			fprintf (fp, "  type: %d\n", move -> type);
+			fprintf (fp, "  dir: %d\n", move -> dir);
+			fprintf (fp, "  x: %d\n", move -> x);
+			fprintf (fp, "  y: %d\n", move -> y);
+
+			move = move -> next;
+		}
+
+		// Moves:
+		fprintf (fp, " rank: %d\n", entity -> rank);
+
+		entity = entity -> next;
+	}
+	fclose (fp);
+}
+
+
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
-	printf ("KEYY = %d\n", key);
+	printf ("key = %d\n", key);
 	//if (program -> time_stone == TRUE && program -> rewind_time >= 0.99) {
 	if (program -> screen == LEVEL_SCREEN) {
 	if (program -> rewind_time == 0.0) if (action > 0) {
 
+		printf ("dev_menu_selected = %d\n", program -> dev_menu_selected);
+
 		// Dev Menu Disabled:
 		if (!(program -> dev_menu)) {
+			printf ("ONE\n");
 			switch (key) {
 				case KEY_RIGHT:
 					player_add_step (program, RIGHT);
@@ -390,9 +447,10 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 		}
 		// Dev Menu:
 		else if (!(program -> dev_menu_selected) && (program -> editor_menu_chapter == 0)) {
+			printf ("TWO\n");
 			switch (key) {
 				case KEY_UP:
-					if (program -> dev_menu < 3)
+					if (program -> dev_menu < 4)
 						program -> dev_menu ++;
 					break;
 				case KEY_DOWN:
@@ -400,6 +458,12 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 						program -> dev_menu --;
 					break;
 				case KEY_SPACE:
+					program -> dev_menu_selected = program -> dev_menu;
+					if (program -> dev_menu_selected == 1) {
+						program -> editor_menu_chapter = 1;
+					}
+					break;
+				case KEY_ENTER:
 					program -> dev_menu_selected = program -> dev_menu;
 					if (program -> dev_menu_selected == 1) {
 						program -> editor_menu_chapter = 1;
@@ -416,7 +480,8 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 			}
 		}
 		// Editor Chapter Menu:
-		else if ((program -> dev_menu_selected) && (program -> editor_menu_chapter != 0)) {
+		else if ((program -> dev_menu_selected == 1) && (program -> editor_menu_chapter != 0)) {
+			printf ("THREE\n");
 			switch (key) {
 				case KEY_UP:
 					if (program -> editor_menu_chapter < 4)
@@ -428,12 +493,9 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 					break;
 				case KEY_SPACE:
 					program -> editor_menu_chapter_selected = program -> editor_menu_chapter;
-					/*
-					program -> dev_menu_selected = program -> dev_menu;
-					if (program -> dev_menu_selected == 1) {
-						program -> editor_menu_chapter = 1;
-					}
-					*/
+					break;
+				case KEY_ENTER:
+					program -> editor_menu_chapter_selected = program -> editor_menu_chapter;
 					break;
 				case KEY_ESC:
 					program -> editor_menu_chapter = 0;
@@ -443,7 +505,31 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 					return;
 			}
 		}
+		else if (program -> dev_menu_selected == 4) {
+			printf ("FOUR\n");
+			switch (key) {
+				case KEY_ESC:
+					program -> editor_menu_chapter = 0;
+					program -> dev_menu_selected = 0;
+					break;
+				case KEY_ENTER:
+					program -> editor_menu_chapter = 0;
+					program -> dev_menu_selected = 0;
+					save_level (program, program -> input_buffer);
+					break;
+				case KEY_DELETE:
+					if (program -> input_buffer > 0)
+						program -> input_buffer[program -> input_buffer_i - 1] = '\0';
+					program -> input_buffer_i --;
+					break;
+				default:
+					program -> input_buffer[program -> input_buffer_i ++] = key;
+					program -> input_buffer[program -> input_buffer_i] = '\0';
+					return;
+			}
+		}
 		else {
+			printf ("FIVE\n");
 			switch (key) {
 				case KEY_ESC:
 					program -> dev_menu_selected = 0;
