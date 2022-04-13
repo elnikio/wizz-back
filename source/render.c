@@ -67,14 +67,19 @@ Program* renderInit (GLFWwindow* window) {
 	program -> dev_menu_selected = FALSE;
 	program -> editor_menu_chapter = FALSE;
 	program -> editor_menu_chapter_selected = FALSE;
+	program -> entity_menu_generic = FALSE;
+	program -> entity_menu_generic_selected = FALSE;
 	program -> input_buffer = malloc(64);
 	program -> input_buffer[0] = '\0';
 	program -> input_buffer_i = 0;
+	program -> selector_x = 0;
+	program -> selector_y = 0;
 
 	load_level (program, program -> level_id);
 	glfwGetWindowSize (program -> window, &(program -> scrWidth), &(program -> scrHeight));
 
 	glfwSetKeyCallback(program -> window, keyboard_callback);
+	glfwSetMouseButtonCallback(program -> window, mouse_callback);
 	guiInit (program, "../fonts/dongle.ttf");
 
 	// Pass data to shader programs:
@@ -348,7 +353,8 @@ void display (Program* program, double currentTime) {
 	float gray[3] = {0.4, 0.4, 0.4};
 	float yellow[3] = {1.0, 1.0, 0.0};
 
-	editorImageDraw (program, program -> selectorTex, 4 * size, 4 * size, size, size);
+	if (program -> dev_menu)
+		editorImageDraw (program, program -> selectorTex, program -> selector_x * size, program -> selector_y * size, size, size);
 	if (program -> dev_menu > 0) {
 		drawText (program, "[1] edit level", 0, 0, 0.6, gray, 1.0);
 		drawText (program, "[2] reload level", 0, 0 + 12.0, 0.6, gray, 1.0);
@@ -421,6 +427,34 @@ void display (Program* program, double currentTime) {
 			drawText (program, "[2] block", 320.0, 0 + 12.0, 0.6, gray, 1.0);
 			drawText (program, "[3] crate", 320.0, 0 + 24.0, 0.6, gray, 1.0);
 			drawText (program, "[4] cauldron", 320.0, 0 + 36.0, 0.6, gray, 1.0);
+			switch (program -> entity_menu_generic) {
+				case 1:
+					drawText (program, "[1] player", 320.0, 0 + 0.0, 0.6, white, 1.0);
+					break;
+				case 2:
+					drawText (program, "[2] block", 320.0, 0 + 12.0, 0.6, white, 1.0);
+					break;
+				case 3:
+					drawText (program, "[3] crate", 320.0, 0 + 24.0, 0.6, white, 1.0);
+					break;
+				case 4:
+					drawText (program, "[4] cauldron", 320.0, 0 + 36.0, 0.6, white, 1.0);
+					break;
+			}
+			switch (program -> entity_menu_generic_selected) {
+				case 1:
+					drawText (program, "[1] player", 320.0, 0 + 0.0, 0.6, yellow, 1.0);
+					break;
+				case 2:
+					drawText (program, "[2] block", 320.0, 0 + 12.0, 0.6, yellow, 1.0);
+					break;
+				case 3:
+					drawText (program, "[3] crate", 320.0, 0 + 24.0, 0.6, yellow, 1.0);
+					break;
+				case 4:
+					drawText (program, "[4] cauldron", 320.0, 0 + 36.0, 0.6, yellow, 1.0);
+					break;
+			}
 		}
 	}
 	if (program -> dev_menu_selected == 4) {

@@ -348,7 +348,7 @@ void step_turtles (Program* program) {
 }
 
 /*
-void save_level (Program* program, char* name) {
+void export_level (Program* program, char* name) {
 	char* dir = malloc(64);
 	snprintf (dir, 64, "%s", name);
 	FILE *fp = fopen (name, "w+");
@@ -401,7 +401,7 @@ void save_level (Program* program, char* name) {
 }
 */
 
-void save_level (Program* program, char* name) {
+void import_level (Program* program, char* name) {
 	char* dir = malloc(64);
 	snprintf (dir, 64, "%s", name);
 	FILE *fp = fopen (name, "w+");
@@ -451,6 +451,106 @@ void save_level (Program* program, char* name) {
 		entity = entity -> next;
 	}
 	fclose (fp);
+}
+
+
+void export_level (Program* program, char* name) {
+	char* dir = malloc(64);
+	snprintf (dir, 64, "%s", name);
+	FILE *fp = fopen (name, "w+");
+
+	Level* level = program -> level;
+	Entity* entity = level -> entities;
+	Entity* ghost = level -> ghosts;
+
+	// Meta-data:
+	fprintf (fp, "%d\n", level -> id);
+	fprintf (fp, "%s\n", level -> name);
+
+	// Cells:
+	fprintf (fp, "C\n");
+	for (int i = 0; i < 15; i ++) {
+		for (int j = 0; j < 15; j ++) {
+			if (level -> cell[i][j].entity != NULL)
+				fprintf (fp, "%d\n", level -> cell[i][j].entity -> id);
+			else
+				fprintf (fp, "N\n");
+		}
+	}
+
+	// Entities:
+	fprintf (fp, "E\n");
+	while (entity != NULL) {
+
+		// Meta-data:
+		fprintf (fp, "%d\n", entity -> id);
+		fprintf (fp, "%d\n", entity -> type);
+		fprintf (fp, "%d\n", entity -> spawnX);
+		fprintf (fp, "%d\n", entity -> spawnY);
+		fprintf (fp, "%d\n", entity -> rank);
+
+		// Moves:
+		Move* move = entity -> moves;
+		fprintf (fp, "M\n");
+		while (move != NULL) {
+			fprintf (fp, "%d\n", move -> type);
+			fprintf (fp, "%d\n", move -> dir);
+			fprintf (fp, "%d\n", move -> x);
+			fprintf (fp, "%d\n", move -> y);
+
+			move = move -> next;
+		}
+
+		entity = entity -> next;
+	}
+	fclose (fp);
+}
+
+void mouse_callback (GLFWwindow* window, int button, int action, int mods) {
+	int width;
+	int height;
+	glfwGetWindowSize(program -> window, &width, &height);
+
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+		
+		// Editor Controls:
+		if (program -> dev_menu) {
+			double xpos, ypos;
+			glfwGetCursorPos(window, &xpos, &ypos);
+			ypos = height - ypos;
+			ypos = ypos - height / 2;
+			xpos = xpos - width / 2;
+			float spriteHeight = (128.0 * height / SCR_HEIGHT_DEFAULT) / 2;
+			float x = ((xpos + spriteHeight / 2) / spriteHeight);
+			float y = ((ypos + spriteHeight / 2) / spriteHeight);
+			if (x >= -8 && y >= -8 && x <= 8 && y <= 8) {
+				program -> selector_x = (int) x;
+				if (x < 0)
+					program -> selector_x = (int) x - 1;
+				// fuck truncation.
+				program -> selector_y = (int) y;
+				if (y < 0)
+					program -> selector_y = (int) y - 1;
+			}
+
+			int X = program -> selector_x;
+			int Y = program -> selector_y;
+			if (program -> entity_menu_generic_selected != 0)
+				if (program -> level -> cell[X][Y].entity != NULL)
+						entityFree (program -> level -> cell[X][Y].entity);
+
+			switch (program -> entity_menu_generic_selected) {
+				case 2:// block
+					program -> level -> cell[X + 7][Y + 7].entity = entityNew (program, BLOCK, X + 7, Y + 7);
+					printf ("ENTITY NEW!\n");
+					break;
+				case 3:// crate
+					program -> level -> cell[X + 7][Y + 7].entity = entityNew (program, CRATE, X + 7, Y + 7);
+					printf ("ENTITY NEW!\n");
+					break;
+			}
+		}
+	}
 }
 
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -534,6 +634,7 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 		// Editor Chapter Menu:
 		else if ((program -> dev_menu_selected == 1) && (program -> editor_menu_chapter != 0)) {
 			printf ("THREE\n");
+			if (program -> editor_menu_chapter_selected == 0)
 			switch (key) {
 				case KEY_UP:
 					if (program -> editor_menu_chapter < 4)
@@ -545,9 +646,13 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 					break;
 				case KEY_SPACE:
 					program -> editor_menu_chapter_selected = program -> editor_menu_chapter;
+					if (program -> editor_menu_chapter_selected == 1)
+						program -> entity_menu_generic = 1;
 					break;
 				case KEY_ENTER:
 					program -> editor_menu_chapter_selected = program -> editor_menu_chapter;
+					if (program -> editor_menu_chapter_selected == 1)
+						program -> entity_menu_generic = 1;
 					break;
 				case KEY_ESC:
 					program -> editor_menu_chapter = 0;
@@ -555,6 +660,34 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 					break;
 				default:
 					return;
+			}
+			// Generic Entity Menu:
+			else if (program -> editor_menu_chapter_selected == 1)
+			switch (key) {
+				case KEY_UP:
+					if (program -> entity_menu_generic < 4)
+						program -> entity_menu_generic ++;
+					break;
+				case KEY_DOWN:
+					if (program -> entity_menu_generic > 1)
+						program -> entity_menu_generic --;
+					break;
+				case KEY_SPACE:
+					program -> entity_menu_generic_selected = program -> entity_menu_generic;
+					break;
+				case KEY_ENTER:
+					program -> entity_menu_generic_selected = program -> entity_menu_generic;
+					break;
+				case KEY_ESC:
+					program -> entity_menu_generic = 0;
+					program -> editor_menu_chapter_selected = 0;
+					break;
+				default:
+					return;
+			}
+			else {
+				program -> entity_menu_generic = 0;
+				program -> editor_menu_chapter_selected = 0;
 			}
 		}
 		else if (program -> dev_menu_selected == 4) {
@@ -567,7 +700,7 @@ void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, i
 				case KEY_ENTER:
 					program -> editor_menu_chapter = 0;
 					program -> dev_menu_selected = 0;
-					save_level (program, program -> input_buffer);
+					export_level (program, program -> input_buffer);
 					break;
 				case KEY_DELETE:
 					if (program -> input_buffer > 0)
@@ -1062,6 +1195,32 @@ void step_level (Program* program) {
 		}
 	}
 	step_turtles (program);
+}
+
+void unload_level (Program* program) {
+
+	Level* level = program -> level;
+	Entity* entity = level -> entities;
+	Entity* ghost = level -> ghosts;
+
+	// Meta-data:
+	free (level -> name);
+
+	// Entities:
+	while (entity != NULL) {
+
+		// Moves:
+		Move* move = entity -> moves;
+		while (move != NULL) {
+			Move* next = move -> next;
+			free (move);
+			move = next;
+		}
+		Entity* next = entity -> next;
+		free (entity);
+		entity = next;
+	}
+	free (level);
 }
 
 void load_level (Program* program, int level) {

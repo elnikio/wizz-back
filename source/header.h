@@ -166,7 +166,6 @@ struct _Entity {
 };
 
 struct _Cell {
-	void* occupant;
 	long occupant_type;
 	long background_type;
 	Entity* entity;
@@ -366,8 +365,12 @@ struct _Program {
 	char dev_menu_selected;
 	char editor_menu_chapter;
 	char editor_menu_chapter_selected;
+	char entity_menu_generic;
+	char entity_menu_generic_selected;
 	char* input_buffer;
 	int input_buffer_i;
+	int selector_x;
+	int selector_y;
 
 	// Game data:
 	char screen; // Are you in the menu? In a level? In settings?
@@ -471,6 +474,7 @@ void printProgramLog (int prog);
 bool checkOpenGLError();
 GLFWwindow* createWindow();
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods);
+void mouse_callback (GLFWwindow* window, int button, int action, int mods);
 
 // @Game functions:
 void load_level (Program* program, int level);
