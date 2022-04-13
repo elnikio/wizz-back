@@ -1,997 +1,997 @@
-id: 0
-name: (null)
-cells:
- entity id: 1
- entity id: 2
- entity id: 3
- entity id: 4
- entity id: 5
- entity id: 6
- entity id: 7
- entity id: 8
- entity id: 9
- entity id: 10
- entity id: 11
- entity id: 12
- entity id: 13
- entity id: 14
- entity id: 15
- entity id: 16
- entity id: 17
- entity id: 18
- entity id: 19
- entity id: 20
- entity id: 21
- entity id: 22
- entity id: 23
- entity id: 24
- entity id: 25
- entity id: 26
- entity id: 27
- entity id: 28
- entity id: 29
- entity id: 30
- entity id: 31
- entity id: 32
- entity id: 33
- entity id: 34
- entity id: 35
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 36
- entity id: 37
- entity id: 38
- entity id: 39
- entity id: 40
- entity id: 41
- entity id: 42
- entity id: 43
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 44
- entity id: 45
- entity id: 46
- entity id: 47
- entity id: 48
- entity id: 49
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 50
- entity id: 51
- entity id: 52
- entity id: 53
- entity id: 54
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 55
- entity id: 56
- entity id: 57
- entity id: 58
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 59
- entity id: 60
- entity id: 61
- entity id: 62
- entity id: NULL
- entity id: NULL
- entity id: 125
- entity id: NULL
- entity id: 127
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 128
- entity id: NULL
- entity id: 63
- entity id: 64
- entity id: 65
- entity id: 66
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 67
- entity id: 68
- entity id: 69
- entity id: 70
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 71
- entity id: 72
- entity id: 73
- entity id: 74
- entity id: 75
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 126
- entity id: NULL
- entity id: NULL
- entity id: 76
- entity id: 77
- entity id: 78
- entity id: 79
- entity id: 80
- entity id: 81
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 82
- entity id: 83
- entity id: 84
- entity id: 85
- entity id: 86
- entity id: 87
- entity id: 88
- entity id: 89
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: NULL
- entity id: 90
- entity id: 91
- entity id: 92
- entity id: 93
- entity id: 94
- entity id: 95
- entity id: 96
- entity id: 97
- entity id: 98
- entity id: 99
- entity id: 100
- entity id: 101
- entity id: 102
- entity id: 103
- entity id: 104
- entity id: 105
- entity id: 106
- entity id: 107
- entity id: 108
- entity id: 109
- entity id: 110
- entity id: 111
- entity id: 112
- entity id: 113
- entity id: 114
- entity id: 115
- entity id: 116
- entity id: 117
- entity id: 118
- entity id: 119
- entity id: 120
- entity id: 121
- entity id: 122
- entity id: 123
- entity id: 124
-entities:
- id: 1
- type: 4096
- spawnX: 0
- spawnY: 0
- entities:
- rank: 50
- id: 2
- type: 4096
- spawnX: 0
- spawnY: 1
- entities:
- rank: 50
- id: 3
- type: 4096
- spawnX: 0
- spawnY: 2
- entities:
- rank: 50
- id: 4
- type: 4096
- spawnX: 0
- spawnY: 3
- entities:
- rank: 50
- id: 5
- type: 16777216
- spawnX: 0
- spawnY: 4
- entities:
- rank: 50
- id: 6
- type: 4096
- spawnX: 0
- spawnY: 5
- entities:
- rank: 50
- id: 7
- type: 4096
- spawnX: 0
- spawnY: 6
- entities:
- rank: 50
- id: 8
- type: 4096
- spawnX: 0
- spawnY: 7
- entities:
- rank: 50
- id: 9
- type: 4096
- spawnX: 0
- spawnY: 8
- entities:
- rank: 50
- id: 10
- type: 4096
- spawnX: 0
- spawnY: 9
- entities:
- rank: 50
- id: 11
- type: 4096
- spawnX: 0
- spawnY: 10
- entities:
- rank: 50
- id: 12
- type: 4096
- spawnX: 0
- spawnY: 11
- entities:
- rank: 50
- id: 13
- type: 4096
- spawnX: 0
- spawnY: 12
- entities:
- rank: 50
- id: 14
- type: 4096
- spawnX: 0
- spawnY: 13
- entities:
- rank: 50
- id: 15
- type: 16777216
- spawnX: 0
- spawnY: 14
- entities:
- rank: 50
- id: 16
- type: 16777216
- spawnX: 1
- spawnY: 0
- entities:
- rank: 50
- id: 17
- type: 4096
- spawnX: 1
- spawnY: 1
- entities:
- rank: 50
- id: 18
- type: 4096
- spawnX: 1
- spawnY: 2
- entities:
- rank: 50
- id: 19
- type: 4096
- spawnX: 1
- spawnY: 3
- entities:
- rank: 50
- id: 20
- type: 4096
- spawnX: 1
- spawnY: 4
- entities:
- rank: 50
- id: 21
- type: 4096
- spawnX: 1
- spawnY: 5
- entities:
- rank: 50
- id: 22
- type: 4096
- spawnX: 1
- spawnY: 6
- entities:
- rank: 50
- id: 23
- type: 4096
- spawnX: 1
- spawnY: 7
- entities:
- rank: 50
- id: 24
- type: 4096
- spawnX: 1
- spawnY: 8
- entities:
- rank: 50
- id: 25
- type: 4096
- spawnX: 1
- spawnY: 9
- entities:
- rank: 50
- id: 26
- type: 4096
- spawnX: 1
- spawnY: 10
- entities:
- rank: 50
- id: 27
- type: 4096
- spawnX: 1
- spawnY: 11
- entities:
- rank: 50
- id: 28
- type: 4096
- spawnX: 1
- spawnY: 12
- entities:
- rank: 50
- id: 29
- type: 16777216
- spawnX: 1
- spawnY: 13
- entities:
- rank: 50
- id: 30
- type: 4096
- spawnX: 1
- spawnY: 14
- entities:
- rank: 50
- id: 31
- type: 4096
- spawnX: 2
- spawnY: 0
- entities:
- rank: 50
- id: 32
- type: 4096
- spawnX: 2
- spawnY: 1
- entities:
- rank: 50
- id: 33
- type: 4096
- spawnX: 2
- spawnY: 2
- entities:
- rank: 50
- id: 34
- type: 4096
- spawnX: 2
- spawnY: 3
- entities:
- rank: 50
- id: 35
- type: 4096
- spawnX: 2
- spawnY: 4
- entities:
- rank: 50
- id: 36
- type: 4096
- spawnX: 2
- spawnY: 10
- entities:
- rank: 50
- id: 37
- type: 4096
- spawnX: 2
- spawnY: 11
- entities:
- rank: 50
- id: 38
- type: 16777216
- spawnX: 2
- spawnY: 12
- entities:
- rank: 50
- id: 39
- type: 4096
- spawnX: 2
- spawnY: 13
- entities:
- rank: 50
- id: 40
- type: 4096
- spawnX: 2
- spawnY: 14
- entities:
- rank: 50
- id: 41
- type: 4096
- spawnX: 3
- spawnY: 0
- entities:
- rank: 50
- id: 42
- type: 4096
- spawnX: 3
- spawnY: 1
- entities:
- rank: 50
- id: 43
- type: 4096
- spawnX: 3
- spawnY: 2
- entities:
- rank: 50
- id: 44
- type: 4096
- spawnX: 3
- spawnY: 12
- entities:
- rank: 50
- id: 45
- type: 4096
- spawnX: 3
- spawnY: 13
- entities:
- rank: 50
- id: 46
- type: 4096
- spawnX: 3
- spawnY: 14
- entities:
- rank: 50
- id: 47
- type: 4096
- spawnX: 4
- spawnY: 0
- entities:
- rank: 50
- id: 48
- type: 16777216
- spawnX: 4
- spawnY: 1
- entities:
- rank: 50
- id: 49
- type: 4096
- spawnX: 4
- spawnY: 2
- entities:
- rank: 50
- id: 50
- type: 16777216
- spawnX: 4
- spawnY: 12
- entities:
- rank: 50
- id: 51
- type: 4096
- spawnX: 4
- spawnY: 13
- entities:
- rank: 50
- id: 52
- type: 4096
- spawnX: 4
- spawnY: 14
- entities:
- rank: 50
- id: 53
- type: 4096
- spawnX: 5
- spawnY: 0
- entities:
- rank: 50
- id: 54
- type: 4096
- spawnX: 5
- spawnY: 1
- entities:
- rank: 50
- id: 55
- type: 4096
- spawnX: 5
- spawnY: 13
- entities:
- rank: 50
- id: 56
- type: 4096
- spawnX: 5
- spawnY: 14
- entities:
- rank: 50
- id: 57
- type: 4096
- spawnX: 6
- spawnY: 0
- entities:
- rank: 50
- id: 58
- type: 4096
- spawnX: 6
- spawnY: 1
- entities:
- rank: 50
- id: 59
- type: 4096
- spawnX: 6
- spawnY: 13
- entities:
- rank: 50
- id: 60
- type: 4096
- spawnX: 6
- spawnY: 14
- entities:
- rank: 50
- id: 61
- type: 4096
- spawnX: 7
- spawnY: 0
- entities:
- rank: 50
- id: 62
- type: 16777216
- spawnX: 7
- spawnY: 1
- entities:
- rank: 50
- id: 63
- type: 16777216
- spawnX: 7
- spawnY: 13
- entities:
- rank: 50
- id: 64
- type: 4096
- spawnX: 7
- spawnY: 14
- entities:
- rank: 50
- id: 65
- type: 4096
- spawnX: 8
- spawnY: 0
- entities:
- rank: 50
- id: 66
- type: 4096
- spawnX: 8
- spawnY: 1
- entities:
- rank: 50
- id: 67
- type: 4096
- spawnX: 8
- spawnY: 13
- entities:
- rank: 50
- id: 68
- type: 4096
- spawnX: 8
- spawnY: 14
- entities:
- rank: 50
- id: 69
- type: 4096
- spawnX: 9
- spawnY: 0
- entities:
- rank: 50
- id: 70
- type: 4096
- spawnX: 9
- spawnY: 1
- entities:
- rank: 50
- id: 71
- type: 4096
- spawnX: 9
- spawnY: 13
- entities:
- rank: 50
- id: 72
- type: 4096
- spawnX: 9
- spawnY: 14
- entities:
- rank: 50
- id: 73
- type: 4096
- spawnX: 10
- spawnY: 0
- entities:
- rank: 50
- id: 74
- type: 16777216
- spawnX: 10
- spawnY: 1
- entities:
- rank: 50
- id: 75
- type: 16777216
- spawnX: 10
- spawnY: 2
- entities:
- rank: 50
- id: 76
- type: 4096
- spawnX: 10
- spawnY: 12
- entities:
- rank: 50
- id: 77
- type: 4096
- spawnX: 10
- spawnY: 13
- entities:
- rank: 50
- id: 78
- type: 4096
- spawnX: 10
- spawnY: 14
- entities:
- rank: 50
- id: 79
- type: 4096
- spawnX: 11
- spawnY: 0
- entities:
- rank: 50
- id: 80
- type: 4096
- spawnX: 11
- spawnY: 1
- entities:
- rank: 50
- id: 81
- type: 4096
- spawnX: 11
- spawnY: 2
- entities:
- rank: 50
- id: 82
- type: 4096
- spawnX: 11
- spawnY: 12
- entities:
- rank: 50
- id: 83
- type: 4096
- spawnX: 11
- spawnY: 13
- entities:
- rank: 50
- id: 84
- type: 4096
- spawnX: 11
- spawnY: 14
- entities:
- rank: 50
- id: 85
- type: 4096
- spawnX: 12
- spawnY: 0
- entities:
- rank: 50
- id: 86
- type: 4096
- spawnX: 12
- spawnY: 1
- entities:
- rank: 50
- id: 87
- type: 4096
- spawnX: 12
- spawnY: 2
- entities:
- rank: 50
- id: 88
- type: 4096
- spawnX: 12
- spawnY: 3
- entities:
- rank: 50
- id: 89
- type: 4096
- spawnX: 12
- spawnY: 4
- entities:
- rank: 50
- id: 90
- type: 4096
- spawnX: 12
- spawnY: 10
- entities:
- rank: 50
- id: 91
- type: 16777216
- spawnX: 12
- spawnY: 11
- entities:
- rank: 50
- id: 92
- type: 4096
- spawnX: 12
- spawnY: 12
- entities:
- rank: 50
- id: 93
- type: 4096
- spawnX: 12
- spawnY: 13
- entities:
- rank: 50
- id: 94
- type: 4096
- spawnX: 12
- spawnY: 14
- entities:
- rank: 50
- id: 95
- type: 4096
- spawnX: 13
- spawnY: 0
- entities:
- rank: 50
- id: 96
- type: 16777216
- spawnX: 13
- spawnY: 1
- entities:
- rank: 50
- id: 97
- type: 4096
- spawnX: 13
- spawnY: 2
- entities:
- rank: 50
- id: 98
- type: 4096
- spawnX: 13
- spawnY: 3
- entities:
- rank: 50
- id: 99
- type: 4096
- spawnX: 13
- spawnY: 4
- entities:
- rank: 50
- id: 100
- type: 16777216
- spawnX: 13
- spawnY: 5
- entities:
- rank: 50
- id: 101
- type: 4096
- spawnX: 13
- spawnY: 6
- entities:
- rank: 50
- id: 102
- type: 4096
- spawnX: 13
- spawnY: 7
- entities:
- rank: 50
- id: 103
- type: 16777216
- spawnX: 13
- spawnY: 8
- entities:
- rank: 50
- id: 104
- type: 16777216
- spawnX: 13
- spawnY: 9
- entities:
- rank: 50
- id: 105
- type: 4096
- spawnX: 13
- spawnY: 10
- entities:
- rank: 50
- id: 106
- type: 4096
- spawnX: 13
- spawnY: 11
- entities:
- rank: 50
- id: 107
- type: 4096
- spawnX: 13
- spawnY: 12
- entities:
- rank: 50
- id: 108
- type: 4096
- spawnX: 13
- spawnY: 13
- entities:
- rank: 50
- id: 109
- type: 4096
- spawnX: 13
- spawnY: 14
- entities:
- rank: 50
- id: 110
- type: 4096
- spawnX: 14
- spawnY: 0
- entities:
- rank: 50
- id: 111
- type: 4096
- spawnX: 14
- spawnY: 1
- entities:
- rank: 50
- id: 112
- type: 4096
- spawnX: 14
- spawnY: 2
- entities:
- rank: 50
- id: 113
- type: 4096
- spawnX: 14
- spawnY: 3
- entities:
- rank: 50
- id: 114
- type: 4096
- spawnX: 14
- spawnY: 4
- entities:
- rank: 50
- id: 115
- type: 4096
- spawnX: 14
- spawnY: 5
- entities:
- rank: 50
- id: 116
- type: 4096
- spawnX: 14
- spawnY: 6
- entities:
- rank: 50
- id: 117
- type: 4096
- spawnX: 14
- spawnY: 7
- entities:
- rank: 50
- id: 118
- type: 4096
- spawnX: 14
- spawnY: 8
- entities:
- rank: 50
- id: 119
- type: 4096
- spawnX: 14
- spawnY: 9
- entities:
- rank: 50
- id: 120
- type: 16777216
- spawnX: 14
- spawnY: 10
- entities:
- rank: 50
- id: 121
- type: 4096
- spawnX: 14
- spawnY: 11
- entities:
- rank: 50
- id: 122
- type: 4096
- spawnX: 14
- spawnY: 12
- entities:
- rank: 50
- id: 123
- type: 4096
- spawnX: 14
- spawnY: 13
- entities:
- rank: 50
- id: 124
- type: 4096
- spawnX: 14
- spawnY: 14
- entities:
- rank: 50
- id: 125
- type: 1
- spawnX: 7
- spawnY: 4
- entities:
- rank: 10
- id: 126
- type: 262144
- spawnX: 10
- spawnY: 9
- entities:
- rank: 2
- id: 127
- type: 2097152
- spawnX: 7
- spawnY: 6
- entities:
- rank: 20
- id: 128
- type: 0
- spawnX: 7
- spawnY: 11
- entities:
- rank: 8
+0
+(null)
+C
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+N
+N
+N
+N
+N
+36
+37
+38
+39
+40
+41
+42
+43
+N
+N
+N
+N
+N
+N
+N
+N
+N
+44
+45
+46
+47
+48
+49
+N
+N
+N
+N
+N
+N
+N
+N
+N
+50
+51
+52
+53
+54
+N
+N
+N
+N
+N
+N
+N
+N
+N
+N
+N
+55
+56
+57
+58
+N
+N
+N
+N
+N
+N
+N
+N
+N
+N
+N
+59
+60
+61
+62
+N
+N
+125
+N
+127
+N
+N
+N
+N
+128
+N
+63
+64
+65
+66
+N
+N
+N
+N
+N
+N
+N
+N
+N
+N
+N
+67
+68
+69
+70
+N
+N
+N
+N
+N
+N
+N
+N
+N
+N
+N
+71
+72
+73
+74
+75
+N
+N
+N
+N
+N
+N
+126
+N
+N
+76
+77
+78
+79
+80
+81
+N
+N
+N
+N
+N
+N
+N
+N
+N
+82
+83
+84
+85
+86
+87
+88
+89
+N
+N
+N
+N
+N
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+E
+1
+4096
+0
+0
+50
+M
+2
+4096
+0
+1
+50
+M
+3
+4096
+0
+2
+50
+M
+4
+4096
+0
+3
+50
+M
+5
+16777216
+0
+4
+50
+M
+6
+4096
+0
+5
+50
+M
+7
+4096
+0
+6
+50
+M
+8
+4096
+0
+7
+50
+M
+9
+4096
+0
+8
+50
+M
+10
+4096
+0
+9
+50
+M
+11
+4096
+0
+10
+50
+M
+12
+4096
+0
+11
+50
+M
+13
+4096
+0
+12
+50
+M
+14
+4096
+0
+13
+50
+M
+15
+16777216
+0
+14
+50
+M
+16
+16777216
+1
+0
+50
+M
+17
+4096
+1
+1
+50
+M
+18
+4096
+1
+2
+50
+M
+19
+4096
+1
+3
+50
+M
+20
+4096
+1
+4
+50
+M
+21
+4096
+1
+5
+50
+M
+22
+4096
+1
+6
+50
+M
+23
+4096
+1
+7
+50
+M
+24
+4096
+1
+8
+50
+M
+25
+4096
+1
+9
+50
+M
+26
+4096
+1
+10
+50
+M
+27
+4096
+1
+11
+50
+M
+28
+4096
+1
+12
+50
+M
+29
+16777216
+1
+13
+50
+M
+30
+4096
+1
+14
+50
+M
+31
+4096
+2
+0
+50
+M
+32
+4096
+2
+1
+50
+M
+33
+4096
+2
+2
+50
+M
+34
+4096
+2
+3
+50
+M
+35
+4096
+2
+4
+50
+M
+36
+4096
+2
+10
+50
+M
+37
+4096
+2
+11
+50
+M
+38
+16777216
+2
+12
+50
+M
+39
+4096
+2
+13
+50
+M
+40
+4096
+2
+14
+50
+M
+41
+4096
+3
+0
+50
+M
+42
+4096
+3
+1
+50
+M
+43
+4096
+3
+2
+50
+M
+44
+4096
+3
+12
+50
+M
+45
+4096
+3
+13
+50
+M
+46
+4096
+3
+14
+50
+M
+47
+4096
+4
+0
+50
+M
+48
+16777216
+4
+1
+50
+M
+49
+4096
+4
+2
+50
+M
+50
+16777216
+4
+12
+50
+M
+51
+4096
+4
+13
+50
+M
+52
+4096
+4
+14
+50
+M
+53
+4096
+5
+0
+50
+M
+54
+4096
+5
+1
+50
+M
+55
+4096
+5
+13
+50
+M
+56
+4096
+5
+14
+50
+M
+57
+4096
+6
+0
+50
+M
+58
+4096
+6
+1
+50
+M
+59
+4096
+6
+13
+50
+M
+60
+4096
+6
+14
+50
+M
+61
+4096
+7
+0
+50
+M
+62
+16777216
+7
+1
+50
+M
+63
+16777216
+7
+13
+50
+M
+64
+4096
+7
+14
+50
+M
+65
+4096
+8
+0
+50
+M
+66
+4096
+8
+1
+50
+M
+67
+4096
+8
+13
+50
+M
+68
+4096
+8
+14
+50
+M
+69
+4096
+9
+0
+50
+M
+70
+4096
+9
+1
+50
+M
+71
+4096
+9
+13
+50
+M
+72
+4096
+9
+14
+50
+M
+73
+4096
+10
+0
+50
+M
+74
+16777216
+10
+1
+50
+M
+75
+16777216
+10
+2
+50
+M
+76
+4096
+10
+12
+50
+M
+77
+4096
+10
+13
+50
+M
+78
+4096
+10
+14
+50
+M
+79
+4096
+11
+0
+50
+M
+80
+4096
+11
+1
+50
+M
+81
+4096
+11
+2
+50
+M
+82
+4096
+11
+12
+50
+M
+83
+4096
+11
+13
+50
+M
+84
+4096
+11
+14
+50
+M
+85
+4096
+12
+0
+50
+M
+86
+4096
+12
+1
+50
+M
+87
+4096
+12
+2
+50
+M
+88
+4096
+12
+3
+50
+M
+89
+4096
+12
+4
+50
+M
+90
+4096
+12
+10
+50
+M
+91
+16777216
+12
+11
+50
+M
+92
+4096
+12
+12
+50
+M
+93
+4096
+12
+13
+50
+M
+94
+4096
+12
+14
+50
+M
+95
+4096
+13
+0
+50
+M
+96
+16777216
+13
+1
+50
+M
+97
+4096
+13
+2
+50
+M
+98
+4096
+13
+3
+50
+M
+99
+4096
+13
+4
+50
+M
+100
+16777216
+13
+5
+50
+M
+101
+4096
+13
+6
+50
+M
+102
+4096
+13
+7
+50
+M
+103
+16777216
+13
+8
+50
+M
+104
+16777216
+13
+9
+50
+M
+105
+4096
+13
+10
+50
+M
+106
+4096
+13
+11
+50
+M
+107
+4096
+13
+12
+50
+M
+108
+4096
+13
+13
+50
+M
+109
+4096
+13
+14
+50
+M
+110
+4096
+14
+0
+50
+M
+111
+4096
+14
+1
+50
+M
+112
+4096
+14
+2
+50
+M
+113
+4096
+14
+3
+50
+M
+114
+4096
+14
+4
+50
+M
+115
+4096
+14
+5
+50
+M
+116
+4096
+14
+6
+50
+M
+117
+4096
+14
+7
+50
+M
+118
+4096
+14
+8
+50
+M
+119
+4096
+14
+9
+50
+M
+120
+16777216
+14
+10
+50
+M
+121
+4096
+14
+11
+50
+M
+122
+4096
+14
+12
+50
+M
+123
+4096
+14
+13
+50
+M
+124
+4096
+14
+14
+50
+M
+125
+1
+7
+4
+10
+M
+126
+262144
+10
+9
+2
+M
+127
+2097152
+7
+6
+20
+M
+128
+0
+7
+11
+8
+M

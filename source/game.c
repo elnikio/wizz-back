@@ -347,6 +347,7 @@ void step_turtles (Program* program) {
 	}
 }
 
+/*
 void save_level (Program* program, char* name) {
 	char* dir = malloc(64);
 	snprintf (dir, 64, "%s", name);
@@ -380,9 +381,11 @@ void save_level (Program* program, char* name) {
 		fprintf (fp, " type: %d\n", entity -> type);
 		fprintf (fp, " spawnX: %d\n", entity -> spawnX);
 		fprintf (fp, " spawnY: %d\n", entity -> spawnY);
+		fprintf (fp, " rank: %d\n", entity -> rank);
 
+		// Moves:
 		Move* move = entity -> moves;
-		fprintf (fp, " entities:\n");
+		fprintf (fp, " moves:\n");
 		while (move != NULL) {
 			fprintf (fp, "  type: %d\n", move -> type);
 			fprintf (fp, "  dir: %d\n", move -> dir);
@@ -392,14 +395,63 @@ void save_level (Program* program, char* name) {
 			move = move -> next;
 		}
 
+		entity = entity -> next;
+	}
+	fclose (fp);
+}
+*/
+
+void save_level (Program* program, char* name) {
+	char* dir = malloc(64);
+	snprintf (dir, 64, "%s", name);
+	FILE *fp = fopen (name, "w+");
+
+	Level* level = program -> level;
+	Entity* entity = level -> entities;
+	Entity* ghost = level -> ghosts;
+
+	// Meta-data:
+	fprintf (fp, "%d\n", level -> id);
+	fprintf (fp, "%s\n", level -> name);
+
+	// Cells:
+	fprintf (fp, "C\n");
+	for (int i = 0; i < 15; i ++) {
+		for (int j = 0; j < 15; j ++) {
+			if (level -> cell[i][j].entity != NULL)
+				fprintf (fp, "%d\n", level -> cell[i][j].entity -> id);
+			else
+				fprintf (fp, "N\n");
+		}
+	}
+
+	// Entities:
+	fprintf (fp, "E\n");
+	while (entity != NULL) {
+
+		// Meta-data:
+		fprintf (fp, "%d\n", entity -> id);
+		fprintf (fp, "%d\n", entity -> type);
+		fprintf (fp, "%d\n", entity -> spawnX);
+		fprintf (fp, "%d\n", entity -> spawnY);
+		fprintf (fp, "%d\n", entity -> rank);
+
 		// Moves:
-		fprintf (fp, " rank: %d\n", entity -> rank);
+		Move* move = entity -> moves;
+		fprintf (fp, "M\n");
+		while (move != NULL) {
+			fprintf (fp, "%d\n", move -> type);
+			fprintf (fp, "%d\n", move -> dir);
+			fprintf (fp, "%d\n", move -> x);
+			fprintf (fp, "%d\n", move -> y);
+
+			move = move -> next;
+		}
 
 		entity = entity -> next;
 	}
 	fclose (fp);
 }
-
 
 void keyboard_callback (GLFWwindow* window, int key, int scancode, int action, int mods) {
 	printf ("key = %d\n", key);
